@@ -18,6 +18,9 @@ namespace DentalHealthFallow_Up.Entities
 
 
         public User User { get; set; } = null!;
-        public Goal Goal { get; set; } = null!;
+        public Goal? Goal { get; set; }
+
+       
+        
     }
 }

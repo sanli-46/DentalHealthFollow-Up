@@ -1,25 +1,41 @@
-﻿namespace DentalHealthFollow_Up
+﻿using DentalHealthFollow_Up;
+using Microsoft.UI.Xaml.Controls;
+using Windows.Networking.NetworkOperators;
+
+namespace DentalHealthFallow_Up;
+
+public partial class MainPage : ContentPage
 {
-    public partial class MainPage : ContentPage
+    public MainPage(string userEmail)
     {
-        int count = 0;
-
-        public MainPage()
-        {
-            InitializeComponent();
-        }
-
-        private void OnCounterClicked(object sender, EventArgs e)
-        {
-            count++;
-
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
-        }
+        InitializeComponent();
+        welcomeLabel.Text = $"Hoş geldin, {userEmail}";
     }
 
+    private async void OnProfileClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(ProfilePage));
+    }
+
+    private async void OnTrackingClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(TrackingPage));
+    }
+
+    private async void OnGoalsClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new GoalsPage(_context));
+
+    }
+
+    private async void OnTipsClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(TipsPage));
+    }
+
+    private async void OnLogoutClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(LoginPage));
+    }
 }
+

@@ -1,11 +1,13 @@
 using DentalHealthFallow_Up.DataAccess;
 using DentalHealthFallow_Up.Entities;
-using DentalHealthFallow_Up.Entities;
+using DentalHealthFallow_Up.Helpers;
+
 
 namespace DentalHealthFollow_Up;
 
 public partial class RegisterPage : ContentPage
 {
+
   
     private readonly AppDbContext _context;
 
@@ -42,10 +44,13 @@ public partial class RegisterPage : ContentPage
             await DisplayAlert("Hata", "Bu eposta adresi zaten kayitli.", "Tamam");
             return;
         }
+
+        var hashedPassword = PasswordHasher.Hash(password);
+
         var user = new User
         {
             Email = email,
-            Password = password
+            Password = hashedPassword
         };
 
         _context.Users.Add(user);

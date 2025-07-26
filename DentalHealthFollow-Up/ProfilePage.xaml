@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DentalHealthFollow_Up.ProfilePage"
+             Title="Profil">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+
+        <Label Text="Ad Soyad" />
+        <Entry x:Name="fullNameEntry" Placeholder="Ad Soyad girin" />
+
+        <Label Text="Yeni Şifre" />
+        <Entry x:Name="passwordEntry" IsPassword="True" Placeholder="Yeni şifre" />
+
+        <Label Text="Şifre Tekrar" />
+        <Entry x:Name="confirmPasswordEntry" IsPassword="True" Placeholder="Şifreyi tekrar girin" />
+
+        <Button Text="Güncelle" Clicked="OnUpdateClicked" />
+
+    </VerticalStackLayout>
+
+</ContentPage>
