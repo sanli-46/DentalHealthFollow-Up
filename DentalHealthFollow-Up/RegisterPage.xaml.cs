@@ -1,6 +1,7 @@
-using DentalHealthFallow_Up.DataAccess;
-using DentalHealthFallow_Up.Entities;
-using DentalHealthFallow_Up.Helpers;
+
+using DentalHealthFollow_Up.Entities;
+using DentalHealthFollow_Up.Helper;
+using System.Net.Http.Json;
 
 
 namespace DentalHealthFollow_Up;
@@ -8,13 +9,10 @@ namespace DentalHealthFollow_Up;
 public partial class RegisterPage : ContentPage
 {
 
-  
-    private readonly AppDbContext _context;
-
-    public RegisterPage(AppDbContext context)
+    public RegisterPage()
     {
         InitializeComponent();
-        _context = context;
+     
     }
 
     private async void OnRegisterClicked(object sender, EventArgs e)
@@ -24,10 +22,8 @@ public partial class RegisterPage : ContentPage
         string password = passwordEntry.Text;
         string confirmPassword = confirmPasswordEntry.Text;
 
-        if (string.IsNullOrWhiteSpace(fullName) ||
-            string.IsNullOrWhiteSpace(email) ||
-            string.IsNullOrWhiteSpace(password) ||
-            string.IsNullOrWhiteSpace(confirmPassword))
+        if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email)
+            || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
         {
             await DisplayAlert("Hata", "Lütfen tüm alanlarý doldurun.", "Tamam");
             return;
@@ -35,31 +31,31 @@ public partial class RegisterPage : ContentPage
 
         if (password != confirmPassword)
         {
-            await DisplayAlert("Hata", "Þifreler eþleþmiyor.", "Tamam");
-            return;
-        }
-       
-        var existingUser = _context.Users.FirstOrDefault(u => u.Email == email);
-        if (existingUser != null) {
-            await DisplayAlert("Hata", "Bu eposta adresi zaten kayitli.", "Tamam");
+            await DisplayAlert("Hata", "Parolalar eþleþmiyor!", "Tamam");
             return;
         }
 
-        var hashedPassword = PasswordHasher.Hash(password);
-
-        var user = new User
+        var user = new
         {
+            Name = fullName,
             Email = email,
-            Password = hashedPassword
+            Password = password,
+            BirthDate = DateTime.Now // Senin Entry'nden gelen tarih olabilir
         };
 
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync(); 
+        using var client = new HttpClient();
+        var response = await client.PostAsJsonAsync("https://localhost:7092/api/user/register", user);
 
-        // Geçici baþarý bildirimi
-        await DisplayAlert("Baþarýlý", "Kayýt iþlemi tamamlandý!", "Tamam");
+        if (response.IsSuccessStatusCode)
+        {
+            await DisplayAlert("Baþarýlý", "Kayýt tamamlandý!", "Tamam");
+            await Navigation.PushAsync(new LoginPage());
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            await DisplayAlert("Hata", $"Kayýt baþarýsýz: {error}", "Tamam");
+        }
+    }
 
-        // TODO: Veritabanýna kayýt eklenecek (sonraki adým)
-        await Navigation.PopAsync();
-}
 }

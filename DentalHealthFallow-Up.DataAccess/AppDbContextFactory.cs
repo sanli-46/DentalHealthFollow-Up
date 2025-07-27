@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace DentalHealthFallow_Up.DataAccess
+namespace DentalHealthFollow_Up.DataAccess
 {
     public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {

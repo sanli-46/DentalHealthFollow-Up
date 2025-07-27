@@ -21,7 +21,7 @@
         </CollectionView>
 
         <Entry x:Name="newGoalEntry"
-               Placeholder="Yeni hedefinizi girin" />
+               Placeholder="Yeni hedef girin" />
 
         <Button Text="Hedef Ekle"
                 Clicked="OnAddGoalClicked" />

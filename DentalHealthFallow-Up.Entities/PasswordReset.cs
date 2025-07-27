@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace DentalHealthFallow_Up.Entities
+namespace DentalHealthFollow_Up.Entities
 {
     public class PasswordReset
     {

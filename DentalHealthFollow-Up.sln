@@ -5,15 +5,17 @@ VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.MAUI", "DentalHealthFollow-Up\DentalHealthFollow-Up.MAUI.csproj", "{158EB15C-7431-4186-B9F1-624641B651AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFallow-Up.Entities", "DentalHealthFallow-Up.Entities\DentalHealthFallow-Up.Entities.csproj", "{593DF3FE-4241-4D1F-8EF7-DECF3F74D056}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.Entities", "DentalHealthFallow-Up.Entities\DentalHealthFollow-Up.Entities.csproj", "{593DF3FE-4241-4D1F-8EF7-DECF3F74D056}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFallow-Up.DataAccess", "DentalHealthFallow-Up.DataAccess\DentalHealthFallow-Up.DataAccess.csproj", "{EB77619D-86D4-4212-A8FA-E604410D87FB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.DataAccess", "DentalHealthFallow-Up.DataAccess\DentalHealthFollow-Up.DataAccess.csproj", "{EB77619D-86D4-4212-A8FA-E604410D87FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFallow-Up.Business", "DentalHealthFallow-Up.Business\DentalHealthFallow-Up.Business.csproj", "{00728C37-5580-44C0-B6A0-853333063668}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.Business", "DentalHealthFallow-Up.Business\DentalHealthFollow-Up.Business.csproj", "{00728C37-5580-44C0-B6A0-853333063668}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFallow-Up.ConsoleApp", "DentalHealthFallow-Up.ConsoleApp\DentalHealthFallow-Up.ConsoleApp.csproj", "{59A67C24-F1A5-4DE9-9391-E157A6A21252}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.ConsoleApp", "DentalHealthFallow-Up.ConsoleApp\DentalHealthFollow-Up.ConsoleApp.csproj", "{59A67C24-F1A5-4DE9-9391-E157A6A21252}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.Helper", "DentalHealthFollow-Up.Helper\DentalHealthFollow-Up.Helper.csproj", "{D1C81A9D-25FF-4C27-8D67-D4183BC70EDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow_Up.API", "DentalHealthFollow_Up.API\DentalHealthFollow_Up.API.csproj", "{A4563C63-A8C2-424F-A9CC-FFAE71EC5302}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{D1C81A9D-25FF-4C27-8D67-D4183BC70EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1C81A9D-25FF-4C27-8D67-D4183BC70EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1C81A9D-25FF-4C27-8D67-D4183BC70EDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4563C63-A8C2-424F-A9CC-FFAE71EC5302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4563C63-A8C2-424F-A9CC-FFAE71EC5302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4563C63-A8C2-424F-A9CC-FFAE71EC5302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4563C63-A8C2-424F-A9CC-FFAE71EC5302}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

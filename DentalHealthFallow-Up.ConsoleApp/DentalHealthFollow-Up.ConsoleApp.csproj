@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-	  <TargetFramework>net8.0-windows</TargetFramework>
+	  <TargetFramework>net8.0</TargetFramework>
 	  <RootNamespace>DentalHealthFallow_Up.ConsoleApp</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DentalHealthFallow-Up.DataAccess\DentalHealthFallow-Up.DataAccess.csproj" />
-    <ProjectReference Include="..\DentalHealthFallow-Up.Entities\DentalHealthFallow-Up.Entities.csproj" />
+    <ProjectReference Include="..\DentalHealthFallow-Up.DataAccess\DentalHealthFollow-Up.DataAccess.csproj" />
+    <ProjectReference Include="..\DentalHealthFallow-Up.Entities\DentalHealthFollow-Up.Entities.csproj" />
   </ItemGroup>
 
 </Project>

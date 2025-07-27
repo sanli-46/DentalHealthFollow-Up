@@ -66,12 +66,17 @@
 	  <ProjectReference Include="..\DentalHealthFallow-Up.Business\DentalHealthFallow-Up.Business.csproj" />
 	  <ProjectReference Include="..\DentalHealthFallow-Up.ConsoleApp\DentalHealthFallow-Up.ConsoleApp.csproj" />
 	  <ProjectReference Include="..\DentalHealthFallow-Up.DataAccess\DentalHealthFallow-Up.DataAccess.csproj" />
+	
 	  <ProjectReference Include="..\DentalHealthFallow-Up.Entities\DentalHealthFallow-Up.Entities.csproj" />
+	
 	  <ProjectReference Include="..\DentalHealthFollow-Up.Helper\DentalHealthFollow-Up.Helper.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiXaml Update="GoalsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="HealthTipsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="LoginPage.xaml">

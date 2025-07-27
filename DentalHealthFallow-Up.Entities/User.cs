@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DentalHealthFallow_Up.Entities
+namespace DentalHealthFollow_Up.Entities
 {
    public class User
     {

@@ -1,6 +1,7 @@
-using DentalHealthFallow_Up;
-using DentalHealthFallow_Up.DataAccess;
-using DentalHealthFallow_Up.Helpers;
+using DentalHealthFollow_Up;
+using DentalHealthFollow_Up.DataAccess;
+using DentalHealthFollow_Up.Helper;
+using System.Net.Http.Json;
 
 namespace DentalHealthFollow_Up;
 
@@ -22,26 +23,32 @@ public partial class LoginPage : ContentPage
     {
         string email = emailEntry.Text;
         string password = passwordEntry.Text;
-        string hashedPassword = PasswordHasher.Hash(password);
 
-        var user = _context.Users.FirstOrDefault(u => u.Email == email && u.Password == hashedPassword);
-
-        if (user != null)
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
-            await DisplayAlert("Baþarýlý", "Giriþ baþarýlý!", "Tamam");
+            await DisplayAlert("Hata", "Lütfen tüm alanlarý doldurun.", "Tamam");
+            return;
+        }
 
-            await Shell.Current.GoToAsync(nameof(MainPage));
-            await Shell.Current.GoToAsync(nameof(LoginPage));
-            await Shell.Current.GoToAsync(nameof(MainPage));
-            await Shell.Current.GoToAsync(nameof(MainPage), new Dictionary<string, object>
-            {
-                ["userEmail"] = email
-            });
+        var userLogin = new
+        {
+            Email = email,
+            Password = password
+        };
 
+        using var client = new HttpClient();
+        var response = await client.PostAsJsonAsync("https://localhost:7092/api/user/login", userLogin);
+
+        if (response.IsSuccessStatusCode)
+        {
+            await DisplayAlert("Baþarýlý", "Giriþ yapýldý.", "Tamam");
+            await Shell.Current.GoToAsync("//MainPage");
         }
         else
         {
-            await DisplayAlert("Hata", "Email veya þifre yanlýþ.", "Tamam");
+            var error = await response.Content.ReadAsStringAsync();
+            await DisplayAlert("Hata", $"Giriþ baþarýsýz: {error}", "Tamam");
         }
     }
+
 }

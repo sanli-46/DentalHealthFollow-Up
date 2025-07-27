@@ -1,14 +1,20 @@
 ﻿using DentalHealthFollow_Up;
+using DentalHealthFollow_Up.DataAccess;
+using Microsoft.Maui.Controls;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Networking.NetworkOperators;
 
-namespace DentalHealthFallow_Up;
+
+namespace DentalHealthFollow_Up;
 
 public partial class MainPage : ContentPage
 {
-    public MainPage(string userEmail)
+    private readonly AppDbContext _context;
+    public MainPage(AppDbContext context, string userEmail)
     {
+
         InitializeComponent();
+        _context = context;
         welcomeLabel.Text = $"Hoş geldin, {userEmail}";
     }
 

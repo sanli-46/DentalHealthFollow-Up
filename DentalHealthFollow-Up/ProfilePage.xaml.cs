@@ -1,5 +1,5 @@
-using DentalHealthFallow_Up.Entities;
-using DentalHealthFallow_Up.DataAccess;
+using DentalHealthFollow_Up.Entities;
+using DentalHealthFollow_Up.DataAccess;
 
 
 namespace DentalHealthFollow_Up;

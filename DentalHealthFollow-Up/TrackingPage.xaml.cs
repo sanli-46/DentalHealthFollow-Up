@@ -1,5 +1,5 @@
-using DentalHealthFallow_Up.DataAccess;
-using DentalHealthFallow_Up.Entities;
+using DentalHealthFollow_Up.DataAccess;
+using DentalHealthFollow_Up.Entities;
 using Microsoft.Maui.Controls;
 
 namespace DentalHealthFollow_Up;

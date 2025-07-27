@@ -1,7 +1,7 @@
-﻿using DentalHealthFallow_Up.Entities;
+﻿using DentalHealthFollow_Up.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace DentalHealthFallow_Up.DataAccess
+namespace DentalHealthFollow_Up.DataAccess
 {
     public class AppDbContext : DbContext
     {

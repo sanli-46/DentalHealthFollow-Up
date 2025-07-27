@@ -1,7 +1,7 @@
-using DentalHealthFallow_Up.DataAccess;
-using DentalHealthFallow_Up.Entities;
+using DentalHealthFollow_Up.DataAccess;
+using DentalHealthFollow_Up.Entities;
 
-namespace DentalHealthFallow_Up;
+namespace DentalHealthFollow_Up;
 
 public partial class GoalsPage : ContentPage
 {
@@ -9,18 +9,12 @@ public partial class GoalsPage : ContentPage
 
     public GoalsPage(AppDbContext context)
     {
-   
+      
         InitializeComponent();
-
+       
         _context = context;
         LoadGoals();
     }
-
-    private void InitializeComponent()
-    {
-        throw new NotImplementedException();
-    }
-
     private void LoadGoals()
     {
         var goals = _context.Goals.ToList();
