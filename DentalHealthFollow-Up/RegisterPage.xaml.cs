@@ -1,61 +1,68 @@
-
-using DentalHealthFollow_Up.Entities;
-using DentalHealthFollow_Up.Helper;
+ï»¿using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 
-
-namespace DentalHealthFollow_Up;
-
-public partial class RegisterPage : ContentPage
+namespace DentalHealthFollow_Up
 {
-
-    public RegisterPage()
+    public partial class RegisterPage : ContentPage
     {
-        InitializeComponent();
-     
+        public RegisterPage()
+        {
+            InitializeComponent();
+        }
+
+        private async void OnRegisterClicked(object sender, EventArgs e)
+        {
+            string fullName = fullNameEntry.Text;
+            string email = emailEntry.Text;
+            string password = passwordEntry.Text;
+            string confirmPassword = confirmPasswordEntry.Text;
+            DateTime birthDate = birthDatePicker.Date;
+
+            if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email)
+                || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                await DisplayAlert("Hata", "LÃ¼tfen tÃ¼m alanlarÄ± doldurun.", "Tamam");
+                return;
+            }
+
+            if (password != confirmPassword)
+            {
+                await DisplayAlert("Hata", "Parolalar eÅŸleÅŸmiyor!", "Tamam");
+                return;
+            }
+
+            var user = new
+            {
+                Name = fullName,
+                Email = email,
+                Password = password,
+                BirthDate = birthDate
+            };
+
+            using var client = new HttpClient();
+
+            try
+            {
+                // ğŸ” BURAYA kendi port numaranÄ± yaz!
+                var response = await client.PostAsJsonAsync("https://localhost:7146/api/user/register", user);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    await DisplayAlert("BaÅŸarÄ±lÄ±", "KayÄ±t tamamlandÄ±!", "Tamam");
+                    await Navigation.PushAsync(new LoginPage());
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    await DisplayAlert("Hata", $"KayÄ±t baÅŸarÄ±sÄ±z: {error}", "Tamam");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hata", $"Sunucuya baÄŸlanÄ±lamadÄ±: {ex.Message}", "Tamam");
+            }
+        }
     }
-
-    private async void OnRegisterClicked(object sender, EventArgs e)
-    {
-        string fullName = fullNameEntry.Text;
-        string email = emailEntry.Text;
-        string password = passwordEntry.Text;
-        string confirmPassword = confirmPasswordEntry.Text;
-
-        if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email)
-            || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
-        {
-            await DisplayAlert("Hata", "Lütfen tüm alanları doldurun.", "Tamam");
-            return;
-        }
-
-        if (password != confirmPassword)
-        {
-            await DisplayAlert("Hata", "Parolalar eşleşmiyor!", "Tamam");
-            return;
-        }
-
-        var user = new
-        {
-            Name = fullName,
-            Email = email,
-            Password = password,
-            BirthDate = DateTime.Now // Senin Entry'nden gelen tarih olabilir
-        };
-
-        using var client = new HttpClient();
-        var response = await client.PostAsJsonAsync("https://localhost:7092/api/user/register", user);
-
-        if (response.IsSuccessStatusCode)
-        {
-            await DisplayAlert("Başarılı", "Kayıt tamamlandı!", "Tamam");
-            await Navigation.PushAsync(new LoginPage());
-        }
-        else
-        {
-            var error = await response.Content.ReadAsStringAsync();
-            await DisplayAlert("Hata", $"Kayıt başarısız: {error}", "Tamam");
-        }
-    }
-
 }
+

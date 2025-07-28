@@ -7,12 +7,12 @@ namespace DentalHealthFollow_Up;
 
 public partial class LoginPage : ContentPage
 {
-    private readonly AppDbContext _context;
+    
 
-    public LoginPage(AppDbContext context)
+    public LoginPage()
     {
         InitializeComponent();
-        _context = context;
+        
     }
     private async void OnRegisterClicked(object sender, EventArgs e)
     {
