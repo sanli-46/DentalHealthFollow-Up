@@ -3,9 +3,6 @@
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\DentalHealthFallow-Up.DataAccess\DentalHealthFallow-Up.DataAccess.csproj" />
-	  <ProjectReference Include="..\DentalHealthFallow-Up.Entities\DentalHealthFallow-Up.Entities.csproj" />
-	</ItemGroup>
+
 </Project>
 

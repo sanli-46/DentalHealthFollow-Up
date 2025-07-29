@@ -4,6 +4,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.MAUI", "DentalHealthFollow-Up\DentalHealthFollow-Up.MAUI.csproj", "{158EB15C-7431-4186-B9F1-624641B651AA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{593DF3FE-4241-4D1F-8EF7-DECF3F74D056} = {593DF3FE-4241-4D1F-8EF7-DECF3F74D056}
+		{59A67C24-F1A5-4DE9-9391-E157A6A21252} = {59A67C24-F1A5-4DE9-9391-E157A6A21252}
+		{D1C81A9D-25FF-4C27-8D67-D4183BC70EDE} = {D1C81A9D-25FF-4C27-8D67-D4183BC70EDE}
+		{EB77619D-86D4-4212-A8FA-E604410D87FB} = {EB77619D-86D4-4212-A8FA-E604410D87FB}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.Entities", "DentalHealthFallow-Up.Entities\DentalHealthFollow-Up.Entities.csproj", "{593DF3FE-4241-4D1F-8EF7-DECF3F74D056}"
 EndProject

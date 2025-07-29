@@ -2,7 +2,7 @@ using DentalHealthFollow_Up.Entities;
 using DentalHealthFollow_Up.DataAccess;
 
 
-namespace DentalHealthFollow_Up;
+namespace DentalHealthFollow_Up.MAUI;
 
 public partial class ProfilePage : ContentPage
 {

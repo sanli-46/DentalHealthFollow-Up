@@ -62,15 +62,6 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\DentalHealthFallow-Up.Business\DentalHealthFallow-Up.Business.csproj" />
-	  <ProjectReference Include="..\DentalHealthFallow-Up.ConsoleApp\DentalHealthFallow-Up.ConsoleApp.csproj" />
-	  <ProjectReference Include="..\DentalHealthFallow-Up.DataAccess\DentalHealthFallow-Up.DataAccess.csproj" />
-	
-	  <ProjectReference Include="..\DentalHealthFallow-Up.Entities\DentalHealthFallow-Up.Entities.csproj" />
-	
-	  <ProjectReference Include="..\DentalHealthFollow-Up.Helper\DentalHealthFollow-Up.Helper.csproj" />
-	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiXaml Update="ForgotPasswordPage.xaml">
@@ -103,6 +94,21 @@
 			<Generator>MSBuild:Compile</Generator>
 			<SubType>Designer</SubType>
 		</Page>
+	</ItemGroup>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		<ItemGroup>
+	  <ProjectReference Include="..\DentalHealthFallow-Up.ConsoleApp\DentalHealthFollow-Up.ConsoleApp.csproj" />
+	  <ProjectReference Include="..\DentalHealthFallow-Up.DataAccess\DentalHealthFollow-Up.DataAccess.csproj" />
+	  <ProjectReference Include="..\DentalHealthFallow-Up.Entities\DentalHealthFollow-Up.Entities.csproj" />
+	  <ProjectReference Include="..\DentalHealthFollow-Up.Helper\DentalHealthFollow-Up.Helper.csproj" />
 	</ItemGroup>
 
 </Project>
