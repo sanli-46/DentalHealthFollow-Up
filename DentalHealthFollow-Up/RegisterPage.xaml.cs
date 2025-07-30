@@ -40,17 +40,21 @@ namespace DentalHealthFollow_Up
                 BirthDate = birthDate
             };
 
-            using var client = new HttpClient();
-
+            
+                HttpClientHandler handler = new HttpClientHandler();
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+                using var client = new HttpClient(handler);
             try
             {
-                // 🔁 BURAYA kendi port numaranı yaz!
-                var response = await client.PostAsJsonAsync("https://localhost:7146/api/user/register", user);
+               
+
+                var response = await client.PostAsJsonAsync("https://192.168.238.1:7250/api/user/register", user);
+
 
                 if (response.IsSuccessStatusCode)
                 {
                     await DisplayAlert("Başarılı", "Kayıt tamamlandı!", "Tamam");
-                    await Navigation.PushAsync(new LoginPage());
+                    await Shell.Current.GoToAsync("//LoginPage");
                 }
                 else
                 {

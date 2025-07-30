@@ -89,12 +89,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
-	<ItemGroup>
-		<Page Include="ForgotPasswordPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-			<SubType>Designer</SubType>
-		</Page>
-	</ItemGroup>
 	
 	
 	
