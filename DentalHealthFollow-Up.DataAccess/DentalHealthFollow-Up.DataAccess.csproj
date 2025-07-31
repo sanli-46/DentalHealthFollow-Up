@@ -12,7 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\DentalHealthFallow-Up.Entities\DentalHealthFollow-Up.Entities.csproj" />
+		<ProjectReference Include="..\DentalHealthFollow-Up.Entities\DentalHealthFollow-Up.Entities.csproj" />
 	</ItemGroup>
 </Project>
 

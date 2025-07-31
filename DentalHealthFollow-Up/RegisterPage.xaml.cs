@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
+using System;
 
 namespace DentalHealthFollow_Up
 {
@@ -40,15 +40,19 @@ namespace DentalHealthFollow_Up
                 BirthDate = birthDate
             };
 
-            
-                HttpClientHandler handler = new HttpClientHandler();
-                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-                using var client = new HttpClient(handler);
+            // Sertifika doğrulamasını devre dışı bırak (test ortamı için)
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+
+            using var client = new HttpClient(handler);
+
             try
             {
-               
-
-                var response = await client.PostAsJsonAsync("https://192.168.238.1:7250/api/user/register", user);
+                // HTTP veya HTTPS test adresin hangisiyse onu kullan:
+               // var response = await client.PostAsJsonAsync("http://192.168.1.9:5050/api/User/register", user);
+                var response = await client.PostAsJsonAsync("https://192.168.1.9:7250/api/User/register", user);
 
 
                 if (response.IsSuccessStatusCode)
@@ -64,9 +68,10 @@ namespace DentalHealthFollow_Up
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Hata", $"Sunucuya bağlanılamadı: {ex.Message}", "Tamam");
+                await DisplayAlert("Bağlantı Hatası", $"API'ye erişilemedi:\n{ex.Message}", "Tamam");
             }
         }
     }
 }
+
 

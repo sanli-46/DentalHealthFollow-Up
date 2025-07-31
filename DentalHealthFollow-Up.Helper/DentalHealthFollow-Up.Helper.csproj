@@ -8,11 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DentalHealthFallow-Up.Entities\DentalHealthFollow-Up.Entities.csproj" />
+    <ProjectReference Include="..\DentalHealthFollow-Up.Entities\DentalHealthFollow-Up.Entities.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,23 +5,23 @@ VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.MAUI", "DentalHealthFollow-Up\DentalHealthFollow-Up.MAUI.csproj", "{158EB15C-7431-4186-B9F1-624641B651AA}"
 	ProjectSection(ProjectDependencies) = postProject
-		{593DF3FE-4241-4D1F-8EF7-DECF3F74D056} = {593DF3FE-4241-4D1F-8EF7-DECF3F74D056}
-		{59A67C24-F1A5-4DE9-9391-E157A6A21252} = {59A67C24-F1A5-4DE9-9391-E157A6A21252}
+		{A4563C63-A8C2-424F-A9CC-FFAE71EC5302} = {A4563C63-A8C2-424F-A9CC-FFAE71EC5302}
+		{C337C875-7402-8EB7-1213-ADD297F7D341} = {C337C875-7402-8EB7-1213-ADD297F7D341}
 		{D1C81A9D-25FF-4C27-8D67-D4183BC70EDE} = {D1C81A9D-25FF-4C27-8D67-D4183BC70EDE}
-		{EB77619D-86D4-4212-A8FA-E604410D87FB} = {EB77619D-86D4-4212-A8FA-E604410D87FB}
+		{D45C49EE-F756-69DD-1390-622CEF5A0399} = {D45C49EE-F756-69DD-1390-622CEF5A0399}
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.Entities", "DentalHealthFallow-Up.Entities\DentalHealthFollow-Up.Entities.csproj", "{593DF3FE-4241-4D1F-8EF7-DECF3F74D056}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.DataAccess", "DentalHealthFallow-Up.DataAccess\DentalHealthFollow-Up.DataAccess.csproj", "{EB77619D-86D4-4212-A8FA-E604410D87FB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.Business", "DentalHealthFallow-Up.Business\DentalHealthFollow-Up.Business.csproj", "{00728C37-5580-44C0-B6A0-853333063668}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.ConsoleApp", "DentalHealthFallow-Up.ConsoleApp\DentalHealthFollow-Up.ConsoleApp.csproj", "{59A67C24-F1A5-4DE9-9391-E157A6A21252}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.Helper", "DentalHealthFollow-Up.Helper\DentalHealthFollow-Up.Helper.csproj", "{D1C81A9D-25FF-4C27-8D67-D4183BC70EDE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow_Up.API", "DentalHealthFollow_Up.API\DentalHealthFollow_Up.API.csproj", "{A4563C63-A8C2-424F-A9CC-FFAE71EC5302}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.Business", "DentalHealthFollow-Up.Business\DentalHealthFollow-Up.Business.csproj", "{2589542E-B4F1-B0C4-74D5-18869971E078}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.Entities", "DentalHealthFollow-Up.Entities\DentalHealthFollow-Up.Entities.csproj", "{D45C49EE-F756-69DD-1390-622CEF5A0399}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.DataAccess", "DentalHealthFollow-Up.DataAccess\DentalHealthFollow-Up.DataAccess.csproj", "{C337C875-7402-8EB7-1213-ADD297F7D341}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalHealthFollow-Up.ConsoleApp", "DentalHealthFollow-Up.ConsoleApp\DentalHealthFollow-Up.ConsoleApp.csproj", "{E6FA9CB7-4459-1BBD-C5DC-4AB6CDF6A5BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,22 +35,6 @@ Global
 		{158EB15C-7431-4186-B9F1-624641B651AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{158EB15C-7431-4186-B9F1-624641B651AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{158EB15C-7431-4186-B9F1-624641B651AA}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{593DF3FE-4241-4D1F-8EF7-DECF3F74D056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{593DF3FE-4241-4D1F-8EF7-DECF3F74D056}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{593DF3FE-4241-4D1F-8EF7-DECF3F74D056}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{593DF3FE-4241-4D1F-8EF7-DECF3F74D056}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EB77619D-86D4-4212-A8FA-E604410D87FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB77619D-86D4-4212-A8FA-E604410D87FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB77619D-86D4-4212-A8FA-E604410D87FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB77619D-86D4-4212-A8FA-E604410D87FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{00728C37-5580-44C0-B6A0-853333063668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{00728C37-5580-44C0-B6A0-853333063668}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{00728C37-5580-44C0-B6A0-853333063668}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{00728C37-5580-44C0-B6A0-853333063668}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59A67C24-F1A5-4DE9-9391-E157A6A21252}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59A67C24-F1A5-4DE9-9391-E157A6A21252}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59A67C24-F1A5-4DE9-9391-E157A6A21252}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59A67C24-F1A5-4DE9-9391-E157A6A21252}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D1C81A9D-25FF-4C27-8D67-D4183BC70EDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1C81A9D-25FF-4C27-8D67-D4183BC70EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1C81A9D-25FF-4C27-8D67-D4183BC70EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -59,6 +43,22 @@ Global
 		{A4563C63-A8C2-424F-A9CC-FFAE71EC5302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4563C63-A8C2-424F-A9CC-FFAE71EC5302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4563C63-A8C2-424F-A9CC-FFAE71EC5302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2589542E-B4F1-B0C4-74D5-18869971E078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2589542E-B4F1-B0C4-74D5-18869971E078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2589542E-B4F1-B0C4-74D5-18869971E078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2589542E-B4F1-B0C4-74D5-18869971E078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D45C49EE-F756-69DD-1390-622CEF5A0399}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D45C49EE-F756-69DD-1390-622CEF5A0399}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D45C49EE-F756-69DD-1390-622CEF5A0399}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D45C49EE-F756-69DD-1390-622CEF5A0399}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C337C875-7402-8EB7-1213-ADD297F7D341}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C337C875-7402-8EB7-1213-ADD297F7D341}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C337C875-7402-8EB7-1213-ADD297F7D341}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C337C875-7402-8EB7-1213-ADD297F7D341}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6FA9CB7-4459-1BBD-C5DC-4AB6CDF6A5BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6FA9CB7-4459-1BBD-C5DC-4AB6CDF6A5BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6FA9CB7-4459-1BBD-C5DC-4AB6CDF6A5BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6FA9CB7-4459-1BBD-C5DC-4AB6CDF6A5BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

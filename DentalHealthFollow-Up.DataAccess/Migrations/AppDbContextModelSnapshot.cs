@@ -4,19 +4,16 @@ using DentalHealthFollow_Up.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DentalHealthFallowUp.DataAccess.Migrations
+namespace DentalHealthFollowUp.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250725003550_InitialCreate")]
-    partial class InitialCreate
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +22,7 @@ namespace DentalHealthFallowUp.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DentalHealthFallow_Up.Entities.Goal", b =>
+            modelBuilder.Entity("DentalHealthFollow_Up.Entities.Goal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +56,7 @@ namespace DentalHealthFallowUp.DataAccess.Migrations
                     b.ToTable("Goals");
                 });
 
-            modelBuilder.Entity("DentalHealthFallow_Up.Entities.GoalRecord", b =>
+            modelBuilder.Entity("DentalHealthFollow_Up.Entities.GoalRecord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -99,7 +96,7 @@ namespace DentalHealthFallowUp.DataAccess.Migrations
                     b.ToTable("GoalRecords");
                 });
 
-            modelBuilder.Entity("DentalHealthFallow_Up.Entities.HealthTip", b =>
+            modelBuilder.Entity("DentalHealthFollow_Up.Entities.HealthTip", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,7 +113,7 @@ namespace DentalHealthFallowUp.DataAccess.Migrations
                     b.ToTable("HealthTips");
                 });
 
-            modelBuilder.Entity("DentalHealthFallow_Up.Entities.PasswordReset", b =>
+            modelBuilder.Entity("DentalHealthFollow_Up.Entities.PasswordReset", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -144,7 +141,7 @@ namespace DentalHealthFallowUp.DataAccess.Migrations
                     b.ToTable("PasswordResets");
                 });
 
-            modelBuilder.Entity("DentalHealthFallow_Up.Entities.User", b =>
+            modelBuilder.Entity("DentalHealthFollow_Up.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -176,9 +173,9 @@ namespace DentalHealthFallowUp.DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DentalHealthFallow_Up.Entities.Goal", b =>
+            modelBuilder.Entity("DentalHealthFollow_Up.Entities.Goal", b =>
                 {
-                    b.HasOne("DentalHealthFallow_Up.Entities.User", "User")
+                    b.HasOne("DentalHealthFollow_Up.Entities.User", "User")
                         .WithMany("Goals")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -187,15 +184,15 @@ namespace DentalHealthFallowUp.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DentalHealthFallow_Up.Entities.GoalRecord", b =>
+            modelBuilder.Entity("DentalHealthFollow_Up.Entities.GoalRecord", b =>
                 {
-                    b.HasOne("DentalHealthFallow_Up.Entities.Goal", "Goal")
+                    b.HasOne("DentalHealthFollow_Up.Entities.Goal", "Goal")
                         .WithMany("GoalRecords")
                         .HasForeignKey("GoalId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DentalHealthFallow_Up.Entities.User", "User")
+                    b.HasOne("DentalHealthFollow_Up.Entities.User", "User")
                         .WithMany("GoalRecords")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -206,9 +203,9 @@ namespace DentalHealthFallowUp.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DentalHealthFallow_Up.Entities.PasswordReset", b =>
+            modelBuilder.Entity("DentalHealthFollow_Up.Entities.PasswordReset", b =>
                 {
-                    b.HasOne("DentalHealthFallow_Up.Entities.User", "User")
+                    b.HasOne("DentalHealthFollow_Up.Entities.User", "User")
                         .WithMany("PasswordResets")
                         .HasForeignKey("Userid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -217,12 +214,12 @@ namespace DentalHealthFallowUp.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DentalHealthFallow_Up.Entities.Goal", b =>
+            modelBuilder.Entity("DentalHealthFollow_Up.Entities.Goal", b =>
                 {
                     b.Navigation("GoalRecords");
                 });
 
-            modelBuilder.Entity("DentalHealthFallow_Up.Entities.User", b =>
+            modelBuilder.Entity("DentalHealthFollow_Up.Entities.User", b =>
                 {
                     b.Navigation("GoalRecords");
 
@@ -230,7 +227,7 @@ namespace DentalHealthFallowUp.DataAccess.Migrations
 
                     b.Navigation("PasswordResets");
                 });
-#pragma warning restore 612, 618
+
         }
     }
 }

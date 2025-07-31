@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\DentalHealthFollow-Up.DataAccess\DentalHealthFollow-Up.DataAccess.csproj" />
+	  <ProjectReference Include="..\DentalHealthFollow-Up.Entities\DentalHealthFollow-Up.Entities.csproj" />
+	  <ProjectReference Include="..\DentalHealthFollow-Up.Helper\DentalHealthFollow-Up.Helper.csproj" />
+	</ItemGroup>
+
+</Project>
+

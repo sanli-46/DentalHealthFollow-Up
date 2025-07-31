@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
 	  <TargetFramework>net8.0</TargetFramework>
-	  <RootNamespace>DentalHealthFallow_Up.ConsoleApp</RootNamespace>
+	  <RootNamespace>DentalHealthFollow_Up.ConsoleApp</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -15,12 +15,13 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.7" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.7">
+      <TreatAsUsed>true</TreatAsUsed>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DentalHealthFallow-Up.DataAccess\DentalHealthFollow-Up.DataAccess.csproj" />
-    <ProjectReference Include="..\DentalHealthFallow-Up.Entities\DentalHealthFollow-Up.Entities.csproj" />
+    <ProjectReference Include="..\DentalHealthFollow_Up.API\DentalHealthFollow_Up.API.csproj" />
   </ItemGroup>
 
 </Project>
