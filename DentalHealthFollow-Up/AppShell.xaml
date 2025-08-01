@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell 
+<Shell  
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:pages="clr-namespace:DentalHealthFollow_Up"
     xmlns:views="clr-namespace:DentalHealthFollow_Up.MAUI"
-    x:Class="DentalHealthFollow_Up.AppShell"
-   
+    x:Class="DentalHealthFollow_Up.MAUI.AppShell"
     Shell.FlyoutBehavior="Disabled"
     Title="DentalHealthFollow_Up">
 
-    <ShellContent Title="Login" ContentTemplate="{DataTemplate pages:LoginPage}" Route="LoginPage" />
-    <ShellContent Title="Register" ContentTemplate="{DataTemplate pages:RegisterPage}" Route="RegisterPage" />
-    <ShellContent Title="Main" ContentTemplate="{DataTemplate pages:MainPage}" Route="MainPage" />
-    <ShellContent Title="Profil" ContentTemplate="{DataTemplate views:ProfilePage}" Route="ProfilePage" />
 
-
+    <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" />
+    <ShellContent Title="Register" Route="RegisterPage" ContentTemplate="{DataTemplate views:RegisterPage}" />
+    <ShellContent Title="Main" Route="MainPage" ContentTemplate="{DataTemplate views:MainPage}" />
+    <ShellContent Title="Profil" Route="ProfilePage" ContentTemplate="{DataTemplate views:ProfilePage}" />
+    <ShellContent Title="Hedefler" Route="GoalsPage" ContentTemplate="{DataTemplate views:GoalsPage}" />
 </Shell>
+
+ 

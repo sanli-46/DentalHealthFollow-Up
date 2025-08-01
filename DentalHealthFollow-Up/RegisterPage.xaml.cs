@@ -1,77 +1,66 @@
-﻿using System.Net.Http;
+﻿using DentalHealthFollow_Up.API.Dtos;
 using System.Net.Http.Json;
-using System;
 
-namespace DentalHealthFollow_Up
+namespace DentalHealthFollow_Up.MAUI;
+
+public partial class RegisterPage : ContentPage
 {
-    public partial class RegisterPage : ContentPage
+    private readonly HttpClient _client;
+
+    public RegisterPage(HttpClient client)
     {
-        public RegisterPage()
+        InitializeComponent();
+        _client = client;
+    }
+
+    private async void OnRegisterClicked(object sender, EventArgs e)
+    {
+        string fullName = fullNameEntry.Text;
+        string email = emailEntry.Text;
+        string password = passwordEntry.Text;
+        string confirmPassword = confirmPasswordEntry.Text;
+        DateTime birthDate = birthDatePicker.Date;
+
+        if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email)
+            || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
         {
-            InitializeComponent();
+            await DisplayAlert("Hata", "Lütfen tüm alanları doldurun.", "Tamam");
+            return;
         }
 
-        private async void OnRegisterClicked(object sender, EventArgs e)
+        if (password != confirmPassword)
         {
-            string fullName = fullNameEntry.Text;
-            string email = emailEntry.Text;
-            string password = passwordEntry.Text;
-            string confirmPassword = confirmPasswordEntry.Text;
-            DateTime birthDate = birthDatePicker.Date;
+            await DisplayAlert("Hata", "Parolalar eşleşmiyor!", "Tamam");
+            return;
+        }
 
-            if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email)
-                || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
+        // Doğru DTO örneği oluşturuluyor
+        var userDto = new UserRegisterDto
+        {
+            Name = fullName,
+            Email = email,
+            Password = password,
+            BirthDate = birthDate
+        };
+
+        try
+        {
+            var response = await _client.PostAsJsonAsync("https://localhost:7092/api/user/register", userDto);
+
+            if (response.IsSuccessStatusCode)
             {
-                await DisplayAlert("Hata", "Lütfen tüm alanları doldurun.", "Tamam");
-                return;
+                await DisplayAlert("Başarılı", "Kayıt tamamlandı!", "Tamam");
+                await Shell.Current.GoToAsync("//LoginPage");
             }
-
-            if (password != confirmPassword)
+            else
             {
-                await DisplayAlert("Hata", "Parolalar eşleşmiyor!", "Tamam");
-                return;
+                var error = await response.Content.ReadAsStringAsync();
+                await DisplayAlert("Hata", $"Kayıt başarısız: {error}", "Tamam");
             }
-
-            var user = new
-            {
-                Name = fullName,
-                Email = email,
-                Password = password,
-                BirthDate = birthDate
-            };
-
-            // Sertifika doğrulamasını devre dışı bırak (test ortamı için)
-            var handler = new HttpClientHandler
-            {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            };
-
-            using var client = new HttpClient(handler);
-
-            try
-            {
-                // HTTP veya HTTPS test adresin hangisiyse onu kullan:
-               // var response = await client.PostAsJsonAsync("http://192.168.1.9:5050/api/User/register", user);
-                var response = await client.PostAsJsonAsync("https://192.168.1.9:7250/api/User/register", user);
-
-
-                if (response.IsSuccessStatusCode)
-                {
-                    await DisplayAlert("Başarılı", "Kayıt tamamlandı!", "Tamam");
-                    await Shell.Current.GoToAsync("//LoginPage");
-                }
-                else
-                {
-                    var error = await response.Content.ReadAsStringAsync();
-                    await DisplayAlert("Hata", $"Kayıt başarısız: {error}", "Tamam");
-                }
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Bağlantı Hatası", $"API'ye erişilemedi:\n{ex.Message}", "Tamam");
-            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Bağlantı Hatası", $"API'ye erişilemedi:\n{ex.Message}", "Tamam");
         }
     }
 }
-
-

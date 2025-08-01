@@ -3,16 +3,18 @@ using DentalHealthFollow_Up.DataAccess;
 using DentalHealthFollow_Up.Helper;
 using System.Net.Http.Json;
 
-namespace DentalHealthFollow_Up;
+
+namespace DentalHealthFollow_Up.MAUI;
 
 public partial class LoginPage : ContentPage
 {
-    
+    private readonly HttpClient _client;
 
-    public LoginPage()
+    public LoginPage(HttpClient client)
     {
         InitializeComponent();
-        
+        _client = client;
+
     }
     private async void OnRegisterClicked(object sender, EventArgs e)
     {
@@ -37,8 +39,8 @@ public partial class LoginPage : ContentPage
             Password = password
         };
 
-        using var client = new HttpClient();
-        var response = await client.PostAsJsonAsync("https://localhost:7092/api/user/login", userLogin);
+
+        var response = await _client.PostAsJsonAsync("https://localhost:7092/api/user/login", userLogin);
 
         if (response.IsSuccessStatusCode)
         {

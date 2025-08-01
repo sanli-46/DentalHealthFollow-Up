@@ -1,22 +1,25 @@
-﻿using DentalHealthFollow_Up;
-using DentalHealthFollow_Up.DataAccess;
-using DentalHealthFollow_Up.MAUI;
+﻿using DentalHealthFollow_Up.DataAccess;
 using Microsoft.Maui.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Windows.Networking.NetworkOperators;
 
+namespace DentalHealthFollow_Up.MAUI;
 
-namespace DentalHealthFollow_Up;
-
+[QueryProperty(nameof(UserEmail), "email")]
 public partial class MainPage : ContentPage
 {
     private readonly AppDbContext _context;
-    public MainPage(AppDbContext context, string userEmail)
-    {
 
+    public string UserEmail { get; set; } = string.Empty;
+
+    public MainPage(AppDbContext context)
+    {
         InitializeComponent();
         _context = context;
-        welcomeLabel.Text = $"Hoş geldin, {userEmail}";
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        welcomeLabel.Text = $"Hoş geldin, {UserEmail}";
     }
 
     private async void OnProfileClicked(object sender, EventArgs e)
@@ -31,8 +34,8 @@ public partial class MainPage : ContentPage
 
     private async void OnGoalsClicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new GoalsPage(_context));
-
+        var client = MauiProgram._serviceProvider.GetService<HttpClient>();
+        await Navigation.PushAsync(new GoalsPage(client));
     }
 
     private async void OnTipsClicked(object sender, EventArgs e)
@@ -42,7 +45,7 @@ public partial class MainPage : ContentPage
 
     private async void OnLogoutClicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync(nameof(LoginPage));
+        await Shell.Current.GoToAsync("//LoginPage");
     }
 }
 
