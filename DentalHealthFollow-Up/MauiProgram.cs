@@ -23,6 +23,11 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+        builder.Services.AddHttpClient("API", client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:7250"); // API'nin çalıştığı port
+        });
+
         builder.Services.AddHttpClient();
 
         builder.Services.AddDbContext<AppDbContext>(options =>
@@ -33,6 +38,10 @@ public static class MauiProgram
         builder.Services.AddTransient<MainPage>();
         builder.Services.AddTransient<AppShell>();
         builder.Services.AddTransient<GoalsPage>();
+        builder.Services.AddTransient<TrackingPage>();
+        builder.Services.AddTransient<HealthTipsPage>();
+        builder.Services.AddTransient<ProfilePage>();
+        builder.Services.AddTransient<ForgotPasswordPage>();
 
 
 #if DEBUG

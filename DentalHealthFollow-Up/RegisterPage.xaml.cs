@@ -45,7 +45,7 @@ public partial class RegisterPage : ContentPage
 
         try
         {
-            var response = await _client.PostAsJsonAsync("https://localhost:7092/api/user/register", userDto);
+            var response = await _client.PostAsJsonAsync("https://localhost:7250/api/user/register", userDto);
 
             if (response.IsSuccessStatusCode)
             {

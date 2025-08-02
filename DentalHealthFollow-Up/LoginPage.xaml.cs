@@ -40,7 +40,7 @@ public partial class LoginPage : ContentPage
         };
 
 
-        var response = await _client.PostAsJsonAsync("https://localhost:7092/api/user/login", userLogin);
+        var response = await _client.PostAsJsonAsync("https://localhost:7250/api/user/login", userLogin);
 
         if (response.IsSuccessStatusCode)
         {

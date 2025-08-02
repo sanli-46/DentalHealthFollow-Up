@@ -1,63 +1,50 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage 
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="DentalHealthFollow_Up.MAUI.GoalsPage"
-             Title="Ağız ve Diş Sağlığı">
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="DentalHealthFollow_Up.MAUI.GoalsPage"
+    Title="Ağız ve Diş Sağlığı">
 
-    <toolkit:TabView>
-        <toolkit:TabView.TabItems>
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <HorizontalStackLayout Spacing="10">
+            <Button Text="Durum" Clicked="ShowStatusSection"/>
+            <Button Text="Hedefler" Clicked="ShowGoalsSection"/>
+        </HorizontalStackLayout>
 
-            <!-- Durum Sekmesi -->
-            <toolkit:TabViewItem Header="Durum">
-                <ScrollView>
-                    <VerticalStackLayout Padding="20" Spacing="10">
-                        <Label Text="Son 7 Günlük Uygulamalar" FontAttributes="Bold" />
+        <StackLayout x:Name="statusSection">
+            <Label Text="Son 7 Günlük Uygulamalar" FontAttributes="Bold" />
+            <CollectionView x:Name="statusList">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="Gray" Padding="10">
+                            <Label Text="{Binding Description}" />
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-                        <CollectionView x:Name="statusList">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Frame BorderColor="Gray" Padding="10">
-                                        <Label Text="{Binding Description}" />
-                                    </Frame>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+            <Label Text="Not Ekle" FontAttributes="Bold" />
+            <Editor x:Name="noteEditor" Placeholder="Bugün için açıklama yazın..." />
+            <Button Text="Notu Kaydet" Clicked="OnSaveNoteClicked" />
+        </StackLayout>
 
-                        <Label Text="Not Ekle" FontAttributes="Bold" />
-                        <Editor x:Name="noteEditor" Placeholder="Bugün için açıklama yazın..." />
-                        <Button Text="Notu Kaydet" Clicked="OnSaveNoteClicked" />
-                    </VerticalStackLayout>
-                </ScrollView>
-            </toolkit:TabViewItem>
+        <StackLayout x:Name="goalsSection" IsVisible="False">
+            <Entry x:Name="goalTitleEntry" Placeholder="Hedef Başlığı" />
+            <Editor x:Name="goalDescriptionEntry" Placeholder="Hedef Açıklaması" />
+            <Picker x:Name="goalPeriodPicker" Title="Periyot Seç (Günde 1, Haftada 1...)" />
+            <Picker x:Name="goalImportancePicker" Title="Önem Derecesi" />
 
-            <!-- Hedef Sekmesi -->
-            <toolkit:TabViewItem Header="Hedefler">
-                <ScrollView>
-                    <VerticalStackLayout Padding="20" Spacing="10">
-                        <Entry x:Name="goalTitleEntry" Placeholder="Hedef Başlığı" />
-                        <Editor x:Name="goalDescriptionEntry" Placeholder="Hedef Açıklaması" />
-                        <Picker x:Name="goalPeriodPicker" Title="Periyot Seç (Günde 1, Haftada 1...)" />
-                        <Picker x:Name="goalImportancePicker" Title="Önem Derecesi" />
-
-                        <Button Text="Hedefi Kaydet" Clicked="OnSaveGoalClicked" />
-
-                        <Label Text="Hedef Listesi" FontAttributes="Bold" />
-                        <CollectionView x:Name="goalList">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <StackLayout Orientation="Horizontal" Spacing="10">
-                                        <Label Text="{Binding Title}" />
-                                        <Button Text="Sil" Clicked="OnDeleteGoalClicked" />
-                                    </StackLayout>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                    </VerticalStackLayout>
-                </ScrollView>
-            </toolkit:TabViewItem>
-
-        </toolkit:TabView.TabItems>
-    </toolkit:TabView>
+            <Button Text="Hedefi Kaydet" Clicked="OnSaveGoalClicked" />
+            <Label Text="Hedef Listesi" FontAttributes="Bold" />
+            <CollectionView x:Name="goalList">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Orientation="Horizontal" Spacing="10">
+                            <Label Text="{Binding Title}" />
+                            <Button Text="Sil" Clicked="OnDeleteGoalClicked" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </VerticalStackLayout>
 </ContentPage>

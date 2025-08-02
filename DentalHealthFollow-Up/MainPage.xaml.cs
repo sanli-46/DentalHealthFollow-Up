@@ -35,7 +35,8 @@ public partial class MainPage : ContentPage
     private async void OnGoalsClicked(object sender, EventArgs e)
     {
         var client = MauiProgram._serviceProvider.GetService<HttpClient>();
-        await Navigation.PushAsync(new GoalsPage(client));
+        await Shell.Current.GoToAsync(nameof(GoalsPage));
+
     }
 
     private async void OnTipsClicked(object sender, EventArgs e)

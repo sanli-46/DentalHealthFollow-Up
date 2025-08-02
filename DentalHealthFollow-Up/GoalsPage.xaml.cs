@@ -6,12 +6,13 @@ public partial class GoalsPage : ContentPage
 {
     private readonly HttpClient _client;
 
-    public GoalsPage(HttpClient client)
+    public GoalsPage()
     {
         InitializeComponent();
-        _client = client;
 
-        // Picker'larý doldur
+        
+        _client = MauiProgram._serviceProvider.GetRequiredService<HttpClient>();
+
         goalImportancePicker.ItemsSource = new List<string> { "Düþük", "Orta", "Yüksek" };
         goalPeriodPicker.ItemsSource = new List<string> { "Günde 1", "Haftada 1", "Ayda 1" };
     }
@@ -42,9 +43,19 @@ public partial class GoalsPage : ContentPage
 
     private async void OnDeleteGoalClicked(object sender, EventArgs e)
     {
-        // Geçici silme örneði
         await DisplayAlert("Sil", "Silme iþlemi baþarýyla tamamlandý.", "Tamam");
     }
+
+        private void ShowStatusSection(object sender, EventArgs e)
+        {
+            statusSection.IsVisible = true;
+            goalsSection.IsVisible = false;
+        }
+
+        private void ShowGoalsSection(object sender, EventArgs e)
+        {
+            statusSection.IsVisible = false;
+            goalsSection.IsVisible = true;
+        }
+    
 }
-
-
