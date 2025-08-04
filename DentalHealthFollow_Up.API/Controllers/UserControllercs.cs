@@ -1,4 +1,4 @@
-﻿using DentalHealthFollow_Up.API.Dtos;
+﻿using DentalHealthFollow_Up.Shared.DTOs;
 using DentalHealthFollow_Up.API.Services;
 using DentalHealthFollow_Up.DataAccess;
 using DentalHealthFollow_Up.Entities;
@@ -83,6 +83,42 @@ namespace DentalHealthFollow_Up.API.Controllers
             _context.SaveChanges();
 
             return Ok("Parola başarıyla güncellendi.");
+        }
+
+        [HttpGet("by-email/{email}")]
+        public async Task<IActionResult> GetByEmail(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+                return NotFound();
+
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Name = user.Name,
+                BirthDate = user.birthdate
+            };
+
+            return Ok(userDto);
+        }
+
+        [HttpPut("password-reset/{id}")]
+        public async Task<IActionResult> ResetPassword(int id, [FromBody] UserUpdateDto dto)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return NotFound();
+
+            if (string.IsNullOrWhiteSpace(dto.Password))
+                return BadRequest("Parola boş olamaz");
+
+
+            user.Password = SecurityHelper.Encrypt(dto.Password);
+
+
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
     }

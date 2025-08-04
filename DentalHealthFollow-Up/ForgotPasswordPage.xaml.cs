@@ -1,61 +1,74 @@
 using System.Net.Http.Json;
-using DentalHealthFollow_Up.MAUI.Models;
-
+using DentalHealthFollow_Up.Shared.DTOs;
 
 namespace DentalHealthFollow_Up.MAUI;
 
-
 public partial class ForgotPasswordPage : ContentPage
 {
-    private readonly HttpClient _httpClient = new();
+    private readonly HttpClient _httpClient;
+    private int userId = 0;
 
     public ForgotPasswordPage()
     {
         InitializeComponent();
-        _httpClient.BaseAddress = new Uri("https://localhost:7146/api/user/");
+        _httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:7146") }; // URL'yi API adresine göre güncelle
     }
 
-    private async void OnCheckEmailClicked(object sender, EventArgs e)
+    private async void OnVerifyClicked(object sender, EventArgs e)
     {
+        MessageLabel.IsVisible = false;
+        NewPasswordLayout.IsVisible = false;
+
         var email = EmailEntry.Text?.Trim();
         if (string.IsNullOrEmpty(email))
         {
-            ResultLabel.Text = "Lütfen e-mail giriniz.";
+            MessageLabel.Text = "E-posta alaný boþ olamaz.";
+            MessageLabel.IsVisible = true;
             return;
         }
 
-        var response = await _httpClient.GetAsync($"forgot-password?email={email}");
+        var response = await _httpClient.GetAsync($"/api/User/by-email/{email}");
 
         if (response.IsSuccessStatusCode)
         {
-            ResultLabel.Text = "Email bulundu. Yeni þifre giriniz.";
-            ResetPanel.IsVisible = true;
+            var user = await response.Content.ReadFromJsonAsync<UserDto>();
+            userId = user!.Id;
+            NewPasswordLayout.IsVisible = true;
         }
         else
         {
-            ResultLabel.Text = "Email sistemde kayýtlý deðil.";
+            MessageLabel.Text = "E-posta adresi sistemde kayýtlý deðil.";
+            MessageLabel.IsVisible = true;
         }
     }
 
-    private async void OnResetPasswordClicked(object sender, EventArgs e)
+    private async void OnUpdatePasswordClicked(object sender, EventArgs e)
     {
+        MessageLabel.IsVisible = false;
+
         if (NewPasswordEntry.Text != ConfirmPasswordEntry.Text)
         {
-            ResultLabel.Text = "Þifreler uyuþmuyor!";
+            MessageLabel.Text = "Parolalar eþleþmiyor.";
+            MessageLabel.IsVisible = true;
             return;
         }
 
-        var dto = new PasswordResetDto
+        var update = new UserUpdateDto
         {
-            Email = EmailEntry.Text.Trim(),
-            NewPassword = NewPasswordEntry.Text.Trim()
+            Password = NewPasswordEntry.Text!
         };
 
-        var response = await _httpClient.PostAsJsonAsync("reset-password", dto);
+        var response = await _httpClient.PutAsJsonAsync($"/api/User/password-reset/{userId}", update);
 
         if (response.IsSuccessStatusCode)
-            ResultLabel.Text = "Parola baþarýyla güncellendi.";
+        {
+            await DisplayAlert("Baþarýlý", "Parola güncellendi", "Tamam");
+            await Shell.Current.GoToAsync("LoginPage");
+        }
         else
-            ResultLabel.Text = "Hata: Þifre güncellenemedi.";
+        {
+            MessageLabel.Text = "Parola güncellenemedi.";
+            MessageLabel.IsVisible = true;
+        }
     }
 }

@@ -1,65 +1,76 @@
-using DentalHealthFollow_Up.Entities;
-using DentalHealthFollow_Up.DataAccess;
-
+using System.Net.Http.Json;
+using DentalHealthFollow_Up.Shared.DTOs;
+using Newtonsoft.Json;
 
 namespace DentalHealthFollow_Up.MAUI;
 
 public partial class ProfilePage : ContentPage
 {
-    private readonly AppDbContext _context;
-    private readonly string _email;
+    private readonly HttpClient _httpClient;
 
-    public ProfilePage(AppDbContext context, string email)
+    public ProfilePage()
     {
         InitializeComponent();
-        _context = context;
-        _email = email;
-
-        LoadUserInfo();
+        _httpClient = new HttpClient();
+        _httpClient.BaseAddress = new Uri("https://localhost:7250"); 
+        LoadUserData();
     }
 
-    private void LoadUserInfo()
+    private async void LoadUserData()
     {
-        var user = _context.Users.FirstOrDefault(u => u.Email == _email);
-        if (user != null)
+        try
         {
-            fullNameEntry.Text = user.Name;
+            // Burada local storage'dan userId alman gerekir. Örnek:
+            var userId = Preferences.Get("UserId", 0);
+
+            var response = await _httpClient.GetAsync($"/api/User/{userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var user = await response.Content.ReadFromJsonAsync<UserDto>();
+
+                NameEntry.Text = user!.Name;
+                EmailEntry.Text = user.Email;
+                BirthDatePicker.Date = user.BirthDate;
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Hata", ex.Message, "Tamam");
         }
     }
 
     private async void OnUpdateClicked(object sender, EventArgs e)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Email == _email);
-        if (user == null)
+        MessageLabel.IsVisible = false;
+
+        if (NewPasswordEntry.Text != ConfirmPasswordEntry.Text)
         {
-            await DisplayAlert("Hata", "Kullanýcý bulunamadý.", "Tamam");
+            MessageLabel.Text = "Parolalar uyuþmuyor.";
+            MessageLabel.IsVisible = true;
             return;
         }
 
-        string fullName = fullNameEntry.Text?.Trim() ?? "";
-        string password = passwordEntry.Text?.Trim() ?? "";
-        string confirm = confirmPasswordEntry.Text?.Trim() ?? "";
-
-        if (string.IsNullOrWhiteSpace(fullName))
+        var updatedUser = new UserUpdateDto
         {
-            await DisplayAlert("Hata", "Ad Soyad boþ olamaz.", "Tamam");
-            return;
-        }
+            Name = NameEntry.Text,
+            Email = EmailEntry.Text,
+            BirthDate = BirthDatePicker.Date,
+            Password = NewPasswordEntry.Text
+        };
 
-        if (!string.IsNullOrEmpty(password))
+        var userId = Preferences.Get("UserId", 0);
+        var response = await _httpClient.PutAsJsonAsync($"/api/User/{userId}", updatedUser);
+
+        if (response.IsSuccessStatusCode)
         {
-            if (password != confirm)
-            {
-                await DisplayAlert("Hata", "Þifreler uyuþmuyor.", "Tamam");
-                return;
-            }
-
-            user.Password = password;
+            await DisplayAlert("Baþarýlý", "Bilgiler güncellendi", "Tamam");
         }
-
-        user.Name = fullName;
-        await _context.SaveChangesAsync();
-
-        await DisplayAlert("Baþarýlý", "Bilgiler güncellendi.", "Tamam");
+        else
+        {
+            var msg = await response.Content.ReadAsStringAsync();
+            MessageLabel.Text = $"Hata: {msg}";
+            MessageLabel.IsVisible = true;
+        }
     }
 }
+

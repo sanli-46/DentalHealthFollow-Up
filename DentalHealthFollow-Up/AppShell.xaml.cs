@@ -8,6 +8,8 @@ namespace DentalHealthFollow_Up.MAUI
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
+            Routing.RegisterRoute(nameof(ForgotPasswordPage), typeof(ForgotPasswordPage));
+
         }
     }
 }

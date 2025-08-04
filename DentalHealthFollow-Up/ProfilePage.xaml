@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              x:Class="DentalHealthFollow_Up.MAUI.ProfilePage"
-             Title="Profilimi Düzenle">
+             Title="Profil Sayfası">
 
-    <VerticalStackLayout Padding="20" Spacing="15">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
 
-        <Label Text="Ad Soyad" />
-        <Entry x:Name="fullNameEntry" Placeholder="Ad Soyad girin" />
+            <Label Text="Ad Soyad" />
+            <Entry x:Name="NameEntry" Placeholder="Ad Soyad" />
 
-        <Label Text="Yeni Şifre" />
-        <Entry x:Name="passwordEntry" IsPassword="True" Placeholder="Yeni şifre" />
+            <Label Text="E-posta" />
+            <Entry x:Name="EmailEntry" Placeholder="ornek@mail.com" Keyboard="Email" />
 
-        <Label Text="Şifre Tekrar" />
-        <Entry x:Name="confirmPasswordEntry" IsPassword="True" Placeholder="Şifreyi tekrar girin" />
+            <Label Text="Doğum Tarihi" />
+            <DatePicker x:Name="BirthDatePicker" MaximumDate="{x:Static sys:DateTime.Now}" />
 
-        <Button Text="Güncelle" Clicked="OnUpdateClicked" />
+            <Label Text="Yeni Parola" />
+            <Entry x:Name="NewPasswordEntry" IsPassword="True" Placeholder="Yeni Parola" />
 
-    </VerticalStackLayout>
+            <Label Text="Yeni Parola Tekrar" />
+            <Entry x:Name="ConfirmPasswordEntry" IsPassword="True" Placeholder="Yeni Parola Tekrar" />
+
+            <Button Text="Bilgileri Güncelle" Clicked="OnUpdateClicked" />
+
+            <Label x:Name="MessageLabel" TextColor="Red" IsVisible="False"/>
+        </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>
+

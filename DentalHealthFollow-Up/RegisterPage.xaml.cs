@@ -1,4 +1,4 @@
-﻿using DentalHealthFollow_Up.API.Dtos;
+﻿using DentalHealthFollow_Up.Shared.DTOs;
 using System.Net.Http.Json;
 
 namespace DentalHealthFollow_Up.MAUI;
@@ -34,7 +34,6 @@ public partial class RegisterPage : ContentPage
             return;
         }
 
-        // Doğru DTO örneği oluşturuluyor
         var userDto = new UserRegisterDto
         {
             Name = fullName,

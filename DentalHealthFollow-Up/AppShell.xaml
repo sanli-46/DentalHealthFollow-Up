@@ -1,18 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell  
+<Shell
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="clr-namespace:DentalHealthFollow_Up.MAUI"
+    xmlns:local="clr-namespace:DentalHealthFollow_Up.MAUI"
     x:Class="DentalHealthFollow_Up.MAUI.AppShell"
     Shell.FlyoutBehavior="Disabled"
     Title="DentalHealthFollow_Up">
 
+    <ShellContent
+        Title="Giriş"
+        ContentTemplate="{DataTemplate local:LoginPage}"
+        Route="LoginPage" />
 
-    <ShellContent Title="Login" Route="LoginPage" ContentTemplate="{DataTemplate views:LoginPage}" />
-    <ShellContent Title="Register" Route="RegisterPage" ContentTemplate="{DataTemplate views:RegisterPage}" />
-    <ShellContent Title="Main" Route="MainPage" ContentTemplate="{DataTemplate views:MainPage}" />
-    <ShellContent Title="Profil" Route="ProfilePage" ContentTemplate="{DataTemplate views:ProfilePage}" />
-    <ShellContent Title="Hedefler" Route="GoalsPage" ContentTemplate="{DataTemplate views:GoalsPage}" />
+    <ShellContent
+        Title="Kayıt"
+        ContentTemplate="{DataTemplate local:RegisterPage}"
+        Route="RegisterPage" />
+
+    <ShellContent
+        Title="Ana Sayfa"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+
+    <ShellContent
+        Title="Profil"
+        ContentTemplate="{DataTemplate local:ProfilePage}"
+        Route="ProfilePage" />
+
+    <ShellContent
+        Title="Hedefler"
+        ContentTemplate="{DataTemplate local:GoalsPage}"
+        Route="GoalsPage" />
+
+    <ShellContent
+    Title="Parolamı Unuttum"
+    ContentTemplate="{DataTemplate local:ForgotPasswordPage}"
+    Route="ForgotPasswordPage" />
+
 </Shell>
-
- 

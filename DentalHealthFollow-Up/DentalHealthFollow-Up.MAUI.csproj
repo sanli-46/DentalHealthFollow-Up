@@ -23,6 +23,7 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -35,10 +36,20 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\DentalHealthFollow_Up.API\DentalHealthFollow_Up.API.csproj" />
+		<ProjectReference Include="..\DentalHealthFollow_Up.Shared\DentalHealthFollow_Up.Shared.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Update="Resources\Images\logo.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </MauiImage>
 	</ItemGroup>
 	
 
 	<ItemGroup>
+		<MauiXaml Update="AppShell.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="ForgotPasswordPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
@@ -63,6 +74,11 @@
 		<MauiXaml Update="TrackingPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+	</ItemGroup>
+	
+
+	<ItemGroup>
+	  <Folder Include="Models\" />
 	</ItemGroup>
 
 </Project>

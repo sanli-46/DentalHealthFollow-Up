@@ -23,6 +23,7 @@
     <ProjectReference Include="..\DentalHealthFollow-Up.Business\DentalHealthFollow-Up.Business.csproj" />
     <ProjectReference Include="..\DentalHealthFollow-Up.DataAccess\DentalHealthFollow-Up.DataAccess.csproj" />
     <ProjectReference Include="..\DentalHealthFollow-Up.Entities\DentalHealthFollow-Up.Entities.csproj" />
+    <ProjectReference Include="..\DentalHealthFollow_Up.Shared\DentalHealthFollow_Up.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

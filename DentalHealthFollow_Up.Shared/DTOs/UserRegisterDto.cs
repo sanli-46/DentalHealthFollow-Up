@@ -1,4 +1,6 @@
-﻿namespace DentalHealthFollow_Up.API.Dtos
+﻿using System;
+
+namespace DentalHealthFollow_Up.Shared.DTOs
 {
     public class UserRegisterDto
     {
