@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using DentalHealthFollow_Up.MAUI;
-using CommunityToolkit.Maui;
+
 
 namespace DentalHealthFollow_Up;
 
@@ -16,7 +16,6 @@ public static class MauiProgram
 
         builder
             .UseMauiApp<App>()
-            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

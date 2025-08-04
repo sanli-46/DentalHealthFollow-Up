@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using CommunityToolkit.Maui;
 
 
 namespace DentalHealthFollow_Up.MAUI
