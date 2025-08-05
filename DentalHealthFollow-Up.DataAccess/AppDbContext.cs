@@ -18,11 +18,7 @@ namespace DentalHealthFollow_Up.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.GoalRecords)
-                .WithOne(gr => gr.User)
-                .HasForeignKey(gr => gr.UserId)
-                .OnDelete(DeleteBehavior.Restrict); 
+         
             modelBuilder.Entity<Goal>()
                 .HasMany(g => g.GoalRecords)
                 .WithOne(gr => gr.Goal)

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DentalHealthFollow_Up.MAUI.StatusPage"
+             Title="Durum Girişi">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="10" Spacing="10">
+
+            <Label Text="Açıklama" />
+            <Editor x:Name="StatusNoteEditor" Placeholder="Açıklama giriniz..." AutoSize="TextChanges" />
+            <Image x:Name="SelectedImagePreview"
+                HeightRequest="150"
+                Aspect="AspectFit"
+                IsVisible="False"
+                Margin="0,10"/>
+
+            <Label Text="Görsel Ekle (.jpg/.png)" />
+            <Button Text="Görsel Seç" Clicked="OnPickImageClicked" />
+
+            <Label Text="Hedef Seç" />
+            <Picker x:Name="GoalPicker"
+                ItemDisplayBinding="{Binding Title}"
+                Title="Hedef Seçiniz" />
+
+
+            <Button Text="Durumu Kaydet" Clicked="OnSaveRecordClicked" />
+
+            <Label Text="Son 7 Günlük Kayıtlar" FontAttributes="Bold" Margin="0,20,0,10"/>
+
+            <CollectionView x:Name="RecordListView">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="LightGray" CornerRadius="8" Padding="10" Margin="0,5">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding GoalTitle}" FontAttributes="Bold"/>
+                                <Label Text="{Binding Note}" FontSize="12"/>
+                                <Label Text="{Binding Date, StringFormat='Tarih: {0:dd.MM.yyyy}'}" FontSize="10"/>
+                                <Label Text="{Binding Time, StringFormat='Saat: {0:hh\\:mm}'}" FontSize="10"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
+

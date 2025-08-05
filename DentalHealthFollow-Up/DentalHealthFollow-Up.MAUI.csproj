@@ -53,6 +53,9 @@
 		<MauiXaml Update="ForgotPasswordPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="GoalEntryPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="GoalsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
@@ -67,6 +70,9 @@
 		</MauiXaml>
 		<MauiXaml Update="RegisterPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="StatusPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="TipsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>

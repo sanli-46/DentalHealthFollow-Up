@@ -41,6 +41,8 @@ public static class MauiProgram
         builder.Services.AddTransient<HealthTipsPage>();
         builder.Services.AddTransient<ProfilePage>();
         builder.Services.AddTransient<ForgotPasswordPage>();
+        builder.Services.AddTransient<StatusPage>();
+
 
 
 #if DEBUG

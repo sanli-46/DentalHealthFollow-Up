@@ -3,6 +3,7 @@ using DentalHealthFollow_Up.Entities;
 using DentalHealthFollow_Up.Shared.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using DentalHealthFollow_Up.Shared.DTOs;
 
 namespace DentalHealthFollow_Up.API.Controllers
 {
@@ -17,25 +18,26 @@ namespace DentalHealthFollow_Up.API.Controllers
             _context = context;
         }
 
+
        
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int userId)
+        public async Task<IActionResult> GetAll(int userId, int lastDays = 7)
         {
-            var goals = await _context.Goals
-                .Where(g => g.UserId == userId)
-                .Select(g => new GoalDto
+            var result = await _context.GoalRecords
+                .Where(x => x.UserId == userId && x.Date >= DateTime.Today.AddDays(-lastDays))
+                .Select(x => new GoalRecordListDto
                 {
-                    Id = g.Id,
-                    UserId = g.UserId,
-                    Title = g.Title,
-                    Description = g.Description,
-                    Period = g.Period,
-                    Importance = g.Importance
+                    Id = x.Id,
+                    Note = x.Note,
+                    Date = x.Date,
+                    Time = x.Time,
+                    GoalTitle = x.Goal.Title
                 })
                 .ToListAsync();
 
-            return Ok(goals);
+            return Ok(result);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] GoalDto dto)

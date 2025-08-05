@@ -1,32 +1,26 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DentalHealthFollow_Up.Entities
+namespace DentalHealthFollow_Up.Shared.DTOs
 {
-    public class GoalRecord
+    public class GoalRecordDto
     {
-        [Key]
         public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("Goal")]
         public int GoalId { get; set; }
 
         public DateTime Date { get; set; }
+      
+
 
         public TimeSpan Time { get; set; }
 
         public int DurationInMinutes { get; set; }
-        public DateTime CreatedAt { get; set; }
-
 
         public string Note { get; set; } = string.Empty;
 
         public string? ImageBase64 { get; set; }
 
         public int UserId { get; set; }
-
-        public Goal Goal { get; set; } = null!;
+       
     }
 }

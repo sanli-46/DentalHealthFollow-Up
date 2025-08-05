@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DentalHealthFollow_Up.MAUI.GoalEntryPage"
+             Title="Hedef Ekle">
+
+        <ScrollView>
+            <VerticalStackLayout Padding="10" Spacing="10">
+
+                <!-- Başlık -->
+                <Label Text="Başlık" />
+                <Entry x:Name="TitleEntry" Placeholder="Hedef başlığı" />
+
+                <!-- Açıklama -->
+                <Label Text="Açıklama" />
+                <Editor x:Name="DescriptionEditor" Placeholder="Hedef açıklaması" AutoSize="TextChanges" />
+
+                <!-- Periyot -->
+                <Label Text="Periyot" />
+                <Picker x:Name="PeriodPicker">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Günde bir</x:String>
+                            <x:String>Haftada bir</x:String>
+                            <x:String>Ayda bir</x:String>
+                            <x:String>6 ayda bir</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+                <!-- Önem Derecesi -->
+                <Label Text="Önem Derecesi" />
+                <Picker x:Name="ImportancePicker">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Düşük</x:String>
+                            <x:String>Orta</x:String>
+                            <x:String>Yüksek</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+                <!-- Kaydet Butonu -->
+                <Button Text="Hedefi Kaydet" Clicked="OnSaveGoalClicked" />
+
+                <!-- Listeleme -->
+                <Label Text="Kayıtlı Hedefler" FontAttributes="Bold" />
+                <CollectionView x:Name="GoalsCollection" Margin="0,10,0,0">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BorderColor="LightGray" CornerRadius="8" Padding="10" Margin="0,5">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Title}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Description}" FontAttributes="Italic" FontSize="12"/>
+                                    <Label Text="{Binding Period}" FontSize="12"/>
+                                    <Label Text="{Binding Importance}" FontSize="12"/>
+
+                                    <Button Text="Sil"
+                                        BackgroundColor="Red"
+                                        TextColor="White"
+                                        Clicked="OnDeleteGoalClicked"
+                                        CommandParameter="{Binding Id}" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </ContentPage>
+

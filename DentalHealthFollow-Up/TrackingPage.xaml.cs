@@ -34,7 +34,8 @@ public partial class TrackingPage : ContentPage
         var record = new GoalRecord
         {
             Note = note,
-            CreatedAt = DateTime.Now
+            Date = DateTime.Today,
+            Time = DateTime.Now.TimeOfDay
         };
 
         _context.GoalRecords.Add(record);
