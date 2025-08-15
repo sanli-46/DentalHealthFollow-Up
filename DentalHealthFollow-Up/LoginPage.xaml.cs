@@ -1,5 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using DentalHealthFollow_Up.Shared.DTOs;
 
@@ -52,8 +54,12 @@ public partial class LoginPage : ContentPage
             await DisplayAlert("Hata", "Geçersiz kullanıcı bilgisi döndü.", "Tamam");
             return;
         }
-
+        Preferences.Set("CurrentUserId", user.UserId);
         _session.CurrentUser = user;
-        await Shell.Current.GoToAsync("//main/home");
+        Application.Current.MainPage = new AppShell();
+    }
+    private async void OnGoRegisterTapped(object sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync("//register");
     }
 }

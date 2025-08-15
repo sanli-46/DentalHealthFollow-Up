@@ -23,6 +23,19 @@
             <DatePicker x:Name="birthDatePicker" MaximumDate="{x:Static sys:DateTime.Now}" />
             
             <Button Text="Kayıt Ol" Clicked="OnRegisterClicked" />
+         
+            <HorizontalStackLayout HorizontalOptions="Center" Margin="0,12,0,0" Spacing="6">
+                <Label Text="Hesabın var mı?" VerticalOptions="Center" />
+                <Label Text="Giriş yap"
+           VerticalOptions="Center"
+           TextDecorations="Underline"
+           TextColor="{DynamicResource Primary}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnGoLoginTapped" NumberOfTapsRequired="1" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

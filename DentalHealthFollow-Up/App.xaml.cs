@@ -1,10 +1,18 @@
-﻿namespace DentalHealthFollow_Up.MAUI;
+﻿using Microsoft.Maui.Storage;
 
-public partial class App : Application
+
+namespace DentalHealthFollow_Up.MAUI
 {
-    public App(AppShell appShell)
+    public partial class App : Application
     {
-        InitializeComponent();
-        MainPage = appShell;
+        public App(AppShell appShell)
+        {
+            InitializeComponent();
+            MainPage = appShell;
+        }
     }
 }
+
+
+
+

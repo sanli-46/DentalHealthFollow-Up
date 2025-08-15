@@ -1,5 +1,6 @@
 ﻿using DentalHealthFollow_Up.Shared.DTOs;
 using System.Net.Http.Json;
+using Microsoft.Maui.Controls;
 
 namespace DentalHealthFollow_Up.MAUI
 {
@@ -41,13 +42,18 @@ namespace DentalHealthFollow_Up.MAUI
                 }
 
                 await DisplayAlert("Başarılı", "Hesap oluşturuldu. Giriş yapabilirsiniz.", "Tamam");
-                await Navigation.PopAsync(); 
+                await Shell.Current.GoToAsync("//login");
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Hata", ex.Message, "Tamam");
             }
         }
+        private async void OnGoLoginTapped(object sender, TappedEventArgs e)
+        {
+            await Shell.Current.GoToAsync("//login");
+        }
+
     }
 }
 

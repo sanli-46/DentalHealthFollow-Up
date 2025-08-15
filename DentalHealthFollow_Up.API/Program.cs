@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
 {
     builder.Configuration.AddUserSecrets<Program>();
+
 }
 
 // 1) Kestrel portlarý
@@ -58,18 +59,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("allow-maui");
 app.UseAuthorization();
-app.MapGet("/api/tips/random", () =>
-{
-    var tips = new[]
-    {
-        "Diþ ipini her akþam kullan.",
-        "Þekerli içeceklerden sonra su iç.",
-        "Florürlü diþ macunu tercih et.",
-        "Yatmadan önce atýþtýrma.",
-        "Diþ fýrçaný 3 ayda bir deðiþtir."
-    };
-    return Results.Ok(tips[Random.Shared.Next(tips.Length)]);
-});
 app.MapControllers();
 
 app.Run();

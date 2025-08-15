@@ -1,7 +1,9 @@
-﻿using DentalHealthFollow_Up.Shared.DTOs;
+﻿using System.Security.Cryptography;
+using System.Text;
 using DentalHealthFollow_Up.API.Services;
 using DentalHealthFollow_Up.DataAccess;
 using DentalHealthFollow_Up.Entities;
+using DentalHealthFollow_Up.Shared.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +15,7 @@ namespace DentalHealthFollow_Up.API.Controllers
     {
         private readonly AppDbContext _context;
         private readonly EncryptionService _encryption;
-        private readonly MailService _mail; 
+        private readonly MailService _mail;
 
         public UserController(AppDbContext context, EncryptionService encryption, MailService mail)
         {
@@ -22,65 +24,73 @@ namespace DentalHealthFollow_Up.API.Controllers
             _mail = mail;
         }
 
-        // 1) KAYIT
+        // --- KAYIT ---
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
         {
-            var email = dto.Email.Trim().ToLowerInvariant();
+            if (dto is null) return BadRequest("Geçersiz istek.");
 
-            var exists = await _context.Users.AnyAsync(u => u.Email.ToLower() == email);
+            var emailNorm = dto.Email?.Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(emailNorm) || string.IsNullOrWhiteSpace(dto.Password))
+                return BadRequest("E-posta ve şifre gerekli.");
+
+            // Şifre politikası (hızlı)
+            static bool Strong(string p) =>
+                p.Length >= 8 && p.Any(char.IsUpper) && p.Any(char.IsLower) && p.Any(char.IsDigit);
+            if (!Strong(dto.Password))
+                return BadRequest("Şifre en az 8 karakter, büyük-küçük harf ve rakam içermeli.");
+
+            var exists = await _context.Users.AsNoTracking().AnyAsync(u => u.Email == emailNorm);
             if (exists) return BadRequest("Bu e-posta ile kayıt var.");
-
-            var encryptedPassword = _encryption.Encrypt(dto.Password); 
 
             var user = new User
             {
-                FullName = dto.Name.Trim(),
-                Email = email,
-                Password = encryptedPassword,
+                FullName = dto.Name?.Trim() ?? dto.Name?.Trim(),
+                Email = emailNorm,
+                Password = "v1:" + _encryption.Encrypt(dto.Password),
                 BirthDate = dto.BirthDate
             };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
+            // Mail gönderimi akışı bozmasın
+            _ = _mail.SendRegisterInfoAsync(user.Email, user.FullName);
+
             return Ok(new { message = "Kayıt başarılı." });
         }
 
-        // 2) GİRİŞ
+        // --- GİRİŞ ---
         [HttpPost("login")]
-        public async Task<IActionResult> Login(UserLoginDto dto)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
         {
-            if (dto is null || string.IsNullOrWhiteSpace(dto.Email) || string.IsNullOrWhiteSpace(dto.Password))
+            if (dto is null) return BadRequest("Geçersiz istek.");
+
+            var emailNorm = dto.Email?.Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(emailNorm) || string.IsNullOrWhiteSpace(dto.Password))
                 return BadRequest("E-posta ve şifre gerekli.");
 
-            var email = dto.Email.Trim().ToLowerInvariant();
+            var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Email == emailNorm);
+            if (userEntity is null) return BadRequest("Kullanıcı bulunamadı.");
 
-            var userEntity = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email.ToLower() == email);
-
-            if (userEntity is null)
-                return BadRequest("Kullanıcı bulunamadı.");
-
-           
-            string? decrypted = null;
-            bool decryptedOk = false;
-
-            try
+            bool ok;
+            if (userEntity.Password.StartsWith("v1:")) // yeni format
             {
-                
-                decrypted = _encryption.Decrypt(userEntity.Password);
-                decryptedOk = string.Equals(decrypted, dto.Password, StringComparison.Ordinal);
+                var plain = _encryption.Decrypt(userEntity.Password["v1:".Length..]);
+                ok = string.Equals(plain, dto.Password, StringComparison.Ordinal);
             }
-            catch
+            else // eski düz metin kayıtlar için tek seferlik migrasyon
             {
-                decryptedOk = string.Equals(userEntity.Password, dto.Password, StringComparison.Ordinal);
+                ok = string.Equals(userEntity.Password, dto.Password, StringComparison.Ordinal);
+                if (ok)
+                {
+                    userEntity.Password = "v1:" + _encryption.Encrypt(dto.Password);
+                    await _context.SaveChangesAsync();
+                }
             }
 
-            if (!decryptedOk)
-                return BadRequest("Parola hatalı.");
+            if (!ok) return BadRequest("Parola hatalı.");
 
-           
             var user = new UserDto
             {
                 UserId = userEntity.UserId,
@@ -92,82 +102,28 @@ namespace DentalHealthFollow_Up.API.Controllers
             return Ok(user);
         }
 
-
-        [HttpGet("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
+        // --- (OPSİYONEL) PAROLA SIFIRLAMA: sadece e-posta gönderir, DB'ye token kaydetmez ---
+        // İstersen tamamen silebilirsin; demo için yeterlidir ve compile hatası çıkarmaz.
+        [HttpPost("password/forgot")]
+        public async Task<IActionResult> Forgot([FromBody] ForgotDto body)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null) return NotFound("Kullanıcı bulunamadı.");
+            var emailNorm = body.Email?.Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(emailNorm)) return Ok(); // enumeration engelle
 
-            var code = Random.Shared.Next(100000, 999999).ToString();
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == emailNorm);
+            if (user is null) return Ok();
 
-            _context.PasswordResets.Add(new PasswordReset
-            {
-                UserId = user.UserId,
-                Token = _encryption.Encrypt(code),  
-                CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(15)  
-            });
-            await _context.SaveChangesAsync();
+            // Sadece mail gönder (DB'de PasswordReset yoksa IsUsed vs. hatası çıkmasın)
+            var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+            var resetLink = $"https://localhost:7250/password-reset?token={Uri.EscapeDataString(token)}";
 
-            await _mail.SendAsync(user.Email, "Parola Sıfırlama Kodu",
-                $"<p>Kodun: <b>{code}</b> (15 dk geçerli)</p>");
-
-            return Ok("Sıfırlama kodu mail adresine gönderildi.");
+            await _mail.SendPasswordResetAsync(user.Email, user.FullName, resetLink);
+            return Ok();
         }
 
-
-        [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] PasswordResetDto dto)
+        public sealed class ForgotDto
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if (user == null) return NotFound("Kullanıcı bulunamadı.");
-
-            var pr = await _context.PasswordResets
-                .Where(x => x.UserId == user.UserId)
-                .OrderByDescending(x => x.PasswordResetId)                
-                .FirstOrDefaultAsync();
-
-            if (pr == null) return BadRequest("Geçerli bir sıfırlama isteği bulunamadı.");
-            if (pr.ExpiresAt < DateTime.UtcNow)             
-                return BadRequest("Sıfırlama kodunun süresi dolmuş.");
-
-            var codePlain = DecryptSafe(pr.Token);          
-            if (!string.Equals(codePlain, dto.Code))
-                return BadRequest("Sıfırlama kodu hatalı.");
-
-            user.Password = _encryption.Encrypt(dto.NewPassword);
-            await _context.SaveChangesAsync();
-
-            return Ok("Parola başarıyla güncellendi.");
+            public string Email { get; set; } = "";
         }
-
-
-        // 5) E-posta ile kullanıcı getir 
-        [HttpGet("by-email/{email}")]
-        public async Task<IActionResult> GetByEmail(string email)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null) return NotFound();
-
-            var userDto = new UserDto
-            {
-                UserId = user.UserId,
-                Email = user.Email,
-                Name = user.FullName,
-                BirthDate = user.BirthDate
-            };
-            return Ok(userDto);
-        }
-
-       
-        private string DecryptSafe(string s)
-        {
-            try { return _encryption.Decrypt(s); }
-            catch { return s; } 
-        }
-
-        private static int RandomNumber(int min, int max)
-            => Random.Shared.Next(min, max + 1);
     }
 }

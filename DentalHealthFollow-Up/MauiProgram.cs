@@ -37,6 +37,15 @@ namespace DentalHealthFollow_Up.MAUI
             })
 #endif
             ;
+            builder.Services.AddSingleton<UserSession>();   // Shared içindeki UserSession'ı kullanıyoruz
+
+            // Sayfalar (Shell ve içerikleri)
+            builder.Services.AddTransient<AppShell>();
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<StatusPage>();
+            builder.Services.AddTransient<GoalEntryPage>();
+            builder.Services.AddTransient<ProfilePage>();
 
             builder.Services.AddSingleton<AppShell>();
 #if DEBUG

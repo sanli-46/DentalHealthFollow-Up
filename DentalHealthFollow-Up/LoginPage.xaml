@@ -13,6 +13,14 @@
         <Entry x:Name="PasswordEntry" Placeholder="••••••" IsPassword="True" />
 
         <Button Text="Giriş Yap" Clicked="OnLoginClicked" />
+        <HorizontalStackLayout HorizontalOptions="Center" Margin="0,12,0,0" Spacing="6">
+            <Label Text="Hesabın yok mu?" VerticalOptions="Center" />
+            <Label Text="Kaydol" TextDecorations="Underline" TextColor="{DynamicResource Primary}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnGoRegisterTapped" NumberOfTapsRequired="1" />
+                </Label.GestureRecognizers>
+            </Label>
+        </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentPage>
 

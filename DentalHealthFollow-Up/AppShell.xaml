@@ -1,24 +1,25 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="DentalHealthFollow_Up.MAUI.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="clr-namespace:DentalHealthFollow_Up.MAUI">
+    xmlns:pages="clr-namespace:DentalHealthFollow_Up.MAUI"
+    Shell.FlyoutBehavior="Disabled">
 
-    
-    <ShellContent Route="login"    ContentTemplate="{DataTemplate views:LoginPage}" />
-    <ShellContent Route="register" ContentTemplate="{DataTemplate views:RegisterPage}" />
-
-    
-    <TabBar Route="main">
-        <Tab Title="Ana Sayfa" Icon="home.png">
-            <ShellContent Route="home" ContentTemplate="{DataTemplate views:MainPage}" />
-        </Tab>
-        <Tab Title="Hedefler" Icon="goals.png">
-            <ShellContent Route="goals" ContentTemplate="{DataTemplate views:GoalsPage}" />
-        </Tab>
-        <Tab Title="Profil" Icon="profile.png">
-            <ShellContent Route="profile" ContentTemplate="{DataTemplate views:ProfilePage}" />
-        </Tab>
+    <TabBar>
+        <ShellContent Title="Ana Sayfa" Route="main"
+                      ContentTemplate="{DataTemplate pages:MainPage}" />
+        <ShellContent Title="Durum" Route="status"
+                      ContentTemplate="{DataTemplate pages:StatusPage}" />
+        <ShellContent Title="Hedefler" Route="goals"
+                      ContentTemplate="{DataTemplate pages:GoalEntryPage}" />
+        <ShellContent Title="Profil" Route="profile"
+                      ContentTemplate="{DataTemplate pages:ProfilePage}" />
     </TabBar>
+
 </Shell>
+
+
+
+
+
