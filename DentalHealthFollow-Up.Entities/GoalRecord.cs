@@ -1,32 +1,20 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DentalHealthFollow_Up.Entities
 {
     public class GoalRecord
     {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        [ForeignKey("Goal")]
+        public int GoalRecordId { get; set; }
+        public int UserId { get; set; }
         public int GoalId { get; set; }
 
         public DateTime Date { get; set; }
-
-        public TimeSpan Time { get; set; }
-
-        public int DurationInMinutes { get; set; }
+        public int? DurationInMinutes { get; set; } // nullable yapıldı
+        public string? Note { get; set; }
+        public string? ImageBase64 { get; set; }
         public DateTime CreatedAt { get; set; }
 
-
-        public string Note { get; set; } = string.Empty;
-
-        public string? ImageBase64 { get; set; }
-
-        public int UserId { get; set; }
-
+        public User User { get; set; } = null!;
         public Goal Goal { get; set; } = null!;
     }
 }

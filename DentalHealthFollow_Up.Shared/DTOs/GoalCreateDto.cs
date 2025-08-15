@@ -6,6 +6,8 @@ public class GoalCreateDto
     public string Description { get; set; } = "";
     public string Period { get; set; } = "";
     public string Importance { get; set; } = "";
+    public int? DurationInMinutes { get; set; }
+
 }
 
 

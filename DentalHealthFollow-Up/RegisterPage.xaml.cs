@@ -1,65 +1,53 @@
 ﻿using DentalHealthFollow_Up.Shared.DTOs;
 using System.Net.Http.Json;
 
-namespace DentalHealthFollow_Up.MAUI;
-
-public partial class RegisterPage : ContentPage
+namespace DentalHealthFollow_Up.MAUI
 {
-    private readonly HttpClient _client;
-
-    public RegisterPage(HttpClient client)
+    public partial class RegisterPage : ContentPage
     {
-        InitializeComponent();
-        _client = client;
-    }
+        public RegisterPage() { InitializeComponent(); }
 
-    private async void OnRegisterClicked(object sender, EventArgs e)
-    {
-        string fullName = fullNameEntry.Text;
-        string email = emailEntry.Text;
-        string password = passwordEntry.Text;
-        string confirmPassword = confirmPasswordEntry.Text;
-        DateTime birthDate = birthDatePicker.Date;
-
-        if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email)
-            || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
+        private async void OnRegisterClicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Hata", "Lütfen tüm alanları doldurun.", "Tamam");
-            return;
-        }
-
-        if (password != confirmPassword)
-        {
-            await DisplayAlert("Hata", "Parolalar eşleşmiyor!", "Tamam");
-            return;
-        }
-
-        var userDto = new UserRegisterDto
-        {
-            Name = fullName,
-            Email = email,
-            Password = password,
-            BirthDate = birthDate
-        };
-
-        try
-        {
-            var response = await _client.PostAsJsonAsync("https://localhost:7250/api/user/register", userDto);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                await DisplayAlert("Başarılı", "Kayıt tamamlandı!", "Tamam");
-                await Shell.Current.GoToAsync("//LoginPage");
+                var name = fullNameEntry.Text?.Trim();
+                var email = emailEntry.Text?.Trim();
+                var password = passwordEntry.Text;
+                var birth = birthDatePicker.Date;
+
+                if (string.IsNullOrWhiteSpace(name) ||
+                    string.IsNullOrWhiteSpace(email) ||
+                    string.IsNullOrWhiteSpace(password))
+                {
+                    await DisplayAlert("Uyarı", "İsim, e-posta ve parola zorunludur.", "Tamam");
+                    return;
+                }
+
+                var dto = new UserRegisterDto
+                {
+                    Name = name!,
+                    Email = email!,
+                    Password = password!,
+                    BirthDate = birth
+                };
+
+                var resp = await Api.Client().PostAsJsonAsync("api/user/register", dto);
+                if (!resp.IsSuccessStatusCode)
+                {
+                    var err = await resp.Content.ReadAsStringAsync();
+                    await DisplayAlert("Hata", string.IsNullOrWhiteSpace(err) ? "Kayıt başarısız." : err, "Tamam");
+                    return;
+                }
+
+                await DisplayAlert("Başarılı", "Hesap oluşturuldu. Giriş yapabilirsiniz.", "Tamam");
+                await Navigation.PopAsync(); 
             }
-            else
+            catch (Exception ex)
             {
-                var error = await response.Content.ReadAsStringAsync();
-                await DisplayAlert("Hata", $"Kayıt başarısız: {error}", "Tamam");
+                await DisplayAlert("Hata", ex.Message, "Tamam");
             }
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Bağlantı Hatası", $"API'ye erişilemedi:\n{ex.Message}", "Tamam");
         }
     }
 }
+

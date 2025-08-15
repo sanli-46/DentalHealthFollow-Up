@@ -1,58 +1,59 @@
-using DentalHealthFollow_Up;
-using DentalHealthFollow_Up.Shared.DTOs;
-using DentalHealthFollow_Up.DataAccess;
-using DentalHealthFollow_Up.Helper;
+ï»¿using System.Net.Http;
 using System.Net.Http.Json;
+using Microsoft.Extensions.DependencyInjection;
+using DentalHealthFollow_Up.Shared.DTOs;
 
-
-namespace DentalHealthFollow_Up.MAUI;
-
+namespace DentalHealthFollow_Up.MAUI; 
 public partial class LoginPage : ContentPage
 {
-    private readonly HttpClient _client;
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly UserSession _session;
 
-    public LoginPage(HttpClient client)
+   
+    public LoginPage() : this(
+        MauiProgram.Services.GetRequiredService<IHttpClientFactory>(),
+        MauiProgram.Services.GetRequiredService<UserSession>())
+    { }
+
+    
+    public LoginPage(IHttpClientFactory httpClientFactory, UserSession session)
     {
         InitializeComponent();
-        _client = client;
-
-    }
-    private async void OnRegisterClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("//RegisterPage");
-
+        _httpClientFactory = httpClientFactory;
+        _session = session;
     }
 
     private async void OnLoginClicked(object sender, EventArgs e)
     {
-        string email = emailEntry.Text;
-        string password = passwordEntry.Text;
+        var email = EmailEntry.Text?.Trim();
+        var password = PasswordEntry.Text;
 
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
         {
-            await DisplayAlert("Hata", "Lütfen tüm alanlarý doldurun.", "Tamam");
+            await DisplayAlert("UyarÄ±", "E-posta ve ÅŸifre giriniz.", "Tamam");
             return;
         }
 
-        var userLogin = new
+        var client = _httpClientFactory.CreateClient("API");
+        var resp = await client.PostAsJsonAsync("api/user/login",
+            new UserLoginDto { Email = email, Password = password });
+
+        if (!resp.IsSuccessStatusCode)
         {
-            Email = email,
-            Password = password
-        };
-
-
-        var response = await _client.PostAsJsonAsync("https://localhost:7250/api/user/login", userLogin);
-
-        if (response.IsSuccessStatusCode)
-        {
-            await DisplayAlert("Baþarýlý", "Giriþ yapýldý.", "Tamam");
-            await Shell.Current.GoToAsync("//MainPage");
+            var msg = await resp.Content.ReadAsStringAsync();
+            await DisplayAlert("GiriÅŸ baÅŸarÄ±sÄ±z",
+                string.IsNullOrWhiteSpace(msg) ? resp.StatusCode.ToString() : msg, "Tamam");
+            return;
         }
-        else
+
+        var user = await resp.Content.ReadFromJsonAsync<UserDto>();
+        if (user is null || user.UserId <= 0)
         {
-            var error = await response.Content.ReadAsStringAsync();
-            await DisplayAlert("Hata", $"Giriþ baþarýsýz: {error}", "Tamam");
+            await DisplayAlert("Hata", "GeÃ§ersiz kullanÄ±cÄ± bilgisi dÃ¶ndÃ¼.", "Tamam");
+            return;
         }
+
+        _session.CurrentUser = user;
+        await Shell.Current.GoToAsync("//main/home");
     }
-
 }

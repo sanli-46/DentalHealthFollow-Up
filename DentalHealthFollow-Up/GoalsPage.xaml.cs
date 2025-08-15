@@ -1,10 +1,13 @@
-namespace DentalHealthFollow_Up.MAUI;
+using System;
+using Microsoft.Maui.Controls;
 
-public partial class GoalsPage : TabbedPage
+namespace DentalHealthFollow_Up.MAUI
 {
-    public GoalsPage()
+    public partial class GoalsPage : TabbedPage
     {
-        InitializeComponent();
+        public GoalsPage()
+        {
+            InitializeComponent(); 
+        }
     }
 }
-

@@ -21,7 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DentalHealthFollow_Up.API\DentalHealthFollow_Up.API.csproj" />
+    <ProjectReference Include="..\DentalHealthFollow-Up.DataAccess\DentalHealthFollow-Up.DataAccess.csproj" />
+    <ProjectReference Include="..\DentalHealthFollow_Up.Shared\DentalHealthFollow_Up.Shared.csproj" />
   </ItemGroup>
 
 </Project>

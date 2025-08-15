@@ -1,17 +1,15 @@
 ﻿using System;
-
 namespace DentalHealthFollow_Up.Shared.DTOs
 {
-    public class GoalRecordDto
+    public class GoalRecordCreateDto
     {
-        public int Id { get; set; }
         public int UserId { get; set; }
         public int GoalId { get; set; }
         public DateTime Date { get; set; }
         public int? DurationInMinutes { get; set; }
         public string? Note { get; set; }
         public string? ImageBase64 { get; set; }
-        public DateTime CreatedAt { get; set; }
     }
 }
+
 

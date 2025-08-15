@@ -1,47 +1,23 @@
-using DentalHealthFollow_Up.DataAccess;
-using DentalHealthFollow_Up.Entities;
-using Microsoft.Maui.Controls;
+using DentalHealthFollow_Up.Shared.DTOs;
+using System.Net.Http.Json;
 
-namespace DentalHealthFollow_Up;
-
-public partial class TrackingPage : ContentPage
+namespace DentalHealthFollow_Up.MAUI
 {
-    private readonly AppDbContext _context;
-
-    public TrackingPage(AppDbContext context)
+    public partial class TrackingPage : ContentPage
     {
-        InitializeComponent();
-        _context = context;
-        LoadTrackings();
-    }
+        private int CurrentUserId => Preferences.Get("CurrentUserId", 0);
 
-    private void LoadTrackings()
-    {
-        var records = _context.GoalRecords.ToList();  // Bu tablo hedef takibi için kullanýlýyor
-        trackingCollectionView.ItemsSource = records;
-    }
+        public TrackingPage() { InitializeComponent(); }
 
-    private async void OnSaveTrackingClicked(object sender, EventArgs e)
-    {
-        string note = trackingNoteEntry.Text?.Trim();
-
-        if (string.IsNullOrWhiteSpace(note))
+        protected override async void OnAppearing()
         {
-            await DisplayAlert("Hata", "Boþ kayýt eklenemez.", "Tamam");
-            return;
+            base.OnAppearing();
+            if (CurrentUserId <= 0) { await DisplayAlert("Uyarý", "Giriþ yapýn.", "Tamam"); return; }
+
+            var data = await Api.Client().GetFromJsonAsync<List<GoalRecordDto>>(
+                $"api/GoalRecords/user/{CurrentUserId}");
+            recordsList.ItemsSource = data ?? new();
         }
-
-        var record = new GoalRecord
-        {
-            Note = note,
-            Date = DateTime.Today,
-            Time = DateTime.Now.TimeOfDay
-        };
-
-        _context.GoalRecords.Add(record);
-        await _context.SaveChangesAsync();
-
-        trackingNoteEntry.Text = "";
-        LoadTrackings();
     }
 }
+

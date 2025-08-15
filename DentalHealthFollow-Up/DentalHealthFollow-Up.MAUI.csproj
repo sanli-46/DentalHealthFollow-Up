@@ -22,6 +22,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
@@ -35,7 +36,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DentalHealthFollow_Up.API\DentalHealthFollow_Up.API.csproj" />
 		<ProjectReference Include="..\DentalHealthFollow_Up.Shared\DentalHealthFollow_Up.Shared.csproj" />
 	</ItemGroup>
 
@@ -63,7 +63,7 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="LoginPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="ProfilePage.xaml">
 			<Generator>MSBuild:Compile</Generator>

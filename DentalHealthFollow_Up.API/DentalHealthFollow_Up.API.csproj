@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>956136b9-743b-49f2-9531-280308c59ce4</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,9 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DentalHealthFollow-Up.Business\DentalHealthFollow-Up.Business.csproj" />
     <ProjectReference Include="..\DentalHealthFollow-Up.DataAccess\DentalHealthFollow-Up.DataAccess.csproj" />
-    <ProjectReference Include="..\DentalHealthFollow-Up.Entities\DentalHealthFollow-Up.Entities.csproj" />
     <ProjectReference Include="..\DentalHealthFollow_Up.Shared\DentalHealthFollow_Up.Shared.csproj" />
   </ItemGroup>
 

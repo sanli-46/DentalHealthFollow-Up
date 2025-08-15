@@ -1,57 +1,64 @@
-﻿using DentalHealthFollow_Up.DataAccess;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Net;
+using System.Net.Http;
+using Microsoft.Extensions.DependencyInjection; 
 using Microsoft.Extensions.Logging;
-using DentalHealthFollow_Up.MAUI;
 
-
-namespace DentalHealthFollow_Up;
-
-public static class MauiProgram
+namespace DentalHealthFollow_Up.MAUI
 {
-    public static IServiceProvider _serviceProvider { get; private set; } = null!;
-
-    public static MauiApp CreateMauiApp()
+    public static class MauiProgram
     {
-        var builder = MauiApp.CreateBuilder();
+        public static IServiceProvider Services { get; private set; } = default!;
 
-        builder
-            .UseMauiApp<App>()
-            .ConfigureFonts(fonts =>
-            {
-                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            });
-
-        builder.Services.AddHttpClient("API", client =>
+        public static MauiApp CreateMauiApp()
         {
-            client.BaseAddress = new Uri("https://localhost:7250"); // API'nin çalıştığı port
-        });
+            var builder = MauiApp.CreateBuilder();
 
-        builder.Services.AddHttpClient();
+            builder
+                .UseMauiApp<App>()
+                .ConfigureFonts(fonts =>
+                {
+                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                });
 
-        builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=DisSagligiDb;Trusted_Connection=True;TrustServerCertificate=True;"));
+            builder.Services.AddSingleton<UserSession>();
 
-        builder.Services.AddTransient<LoginPage>();
-        builder.Services.AddTransient<RegisterPage>();
-        builder.Services.AddTransient<MainPage>();
-        builder.Services.AddTransient<AppShell>();
-        builder.Services.AddTransient<GoalsPage>();
-        builder.Services.AddTransient<TrackingPage>();
-        builder.Services.AddTransient<HealthTipsPage>();
-        builder.Services.AddTransient<ProfilePage>();
-        builder.Services.AddTransient<ForgotPasswordPage>();
-        builder.Services.AddTransient<StatusPage>();
-
-
-
+            builder.Services.AddHttpClient("API", c =>
+            {
+                c.BaseAddress = new Uri(GetApiBase());
+                c.DefaultRequestVersion = new Version(2, 0);
+                c.DefaultVersionPolicy = HttpVersionPolicy.RequestVersionOrLower;
+            })
 #if DEBUG
-        builder.Logging.AddDebug();
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            })
 #endif
+            ;
 
-        var mauiApp = builder.Build();
-        _serviceProvider = mauiApp.Services;
+            builder.Services.AddSingleton<AppShell>();
+#if DEBUG
+            builder.Logging.AddDebug();
+#endif
+            var app = builder.Build();
+            Services = app.Services;
+            return app;
+        }
 
-        return mauiApp;
+        private static string GetApiBase()
+        {
+#if ANDROID
+            return "https://10.0.2.2:7250/";
+#elif IOS || MACCATALYST
+            return "https://localhost:7250/";
+#elif WINDOWS
+            return "https://localhost:7250/";
+#else
+            return "https://localhost:7250/";
+#endif
+        }
     }
 }
+

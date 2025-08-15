@@ -6,12 +6,11 @@ namespace DentalHealthFollow_Up.Entities
 {
    public class User
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public int UserId { get; set; }
+        public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } =string.Empty;
-        public string Salt { get; set; } = string.Empty;
-        public DateTime birthdate{ get; set; }
+        public string Password { get; set; } = string.Empty;
+        public DateTime BirthDate{ get; set; }
 
 
         public ICollection<Goal> Goals { get; set; } = new List<Goal>();

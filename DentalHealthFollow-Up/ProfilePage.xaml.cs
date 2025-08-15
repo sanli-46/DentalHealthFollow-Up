@@ -1,76 +1,63 @@
-using System.Net.Http.Json;
 using DentalHealthFollow_Up.Shared.DTOs;
-using Newtonsoft.Json;
+using System.Net.Http.Json;
 
-namespace DentalHealthFollow_Up.MAUI;
-
-public partial class ProfilePage : ContentPage
+namespace DentalHealthFollow_Up.MAUI
 {
-    private readonly HttpClient _httpClient;
-
-    public ProfilePage()
+    public partial class ProfilePage : ContentPage
     {
-        InitializeComponent();
-        _httpClient = new HttpClient();
-        _httpClient.BaseAddress = new Uri("https://localhost:7250"); 
-        LoadUserData();
-    }
+        private int CurrentUserId => Preferences.Get("CurrentUserId", 0);
 
-    private async void LoadUserData()
-    {
-        try
+        public ProfilePage() { InitializeComponent(); }
+
+        protected override async void OnAppearing()
         {
-            // Burada local storage'dan userId alman gerekir. Örnek:
-            var userId = Preferences.Get("UserId", 0);
+            base.OnAppearing();
+            if (CurrentUserId <= 0) { await DisplayAlert("Uyarý", "Giriþ yapýn.", "Tamam"); return; }
 
-            var response = await _httpClient.GetAsync($"/api/User/{userId}");
-            if (response.IsSuccessStatusCode)
+            var user = await Api.Client().GetFromJsonAsync<UserDto>($"api/user/{CurrentUserId}");
+            if (user is null) return;
+
+            NameEntry.Text = user.Name;
+            EmailEntry.Text = user.Email;
+            BirthDatePicker.Date = user.BirthDate == default ? DateTime.Today : user.BirthDate;
+        }
+
+        private async void OnUpdateClicked(object sender, EventArgs e)
+        {
+            try
             {
-                var user = await response.Content.ReadFromJsonAsync<UserDto>();
+                var dto = new UserUpdateDto
+                {
+                    
+                    Name = NameEntry.Text?.Trim(),
+                    Email = EmailEntry.Text?.Trim(),
+                    BirthDate = BirthDatePicker.Date
+                };
 
-                NameEntry.Text = user!.Name;
-                EmailEntry.Text = user.Email;
-                BirthDatePicker.Date = user.BirthDate;
+                var userId = Preferences.Get("CurrentUserId", 0);
+                if (userId <= 0)
+                {
+                    await DisplayAlert("Uyarý", "Önce giriþ yapýn.", "Tamam");
+                    return;
+                }
+
+                var resp = await Api.Client().PutAsJsonAsync($"api/user/{userId}", dto);
+                if (resp.IsSuccessStatusCode)
+                {
+                    Preferences.Set("CurrentUserName", dto.Name ?? "");
+                    Preferences.Set("CurrentUserEmail", dto.Email ?? "");
+                    await DisplayAlert("Baþarýlý", "Profil güncellendi.", "Tamam");
+                }
+                else
+                {
+                    var err = await resp.Content.ReadAsStringAsync();
+                    await DisplayAlert("Hata", string.IsNullOrWhiteSpace(err) ? "Güncelleme baþarýsýz." : err, "Tamam");
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Hata", ex.Message, "Tamam");
-        }
-    }
-
-    private async void OnUpdateClicked(object sender, EventArgs e)
-    {
-        MessageLabel.IsVisible = false;
-
-        if (NewPasswordEntry.Text != ConfirmPasswordEntry.Text)
-        {
-            MessageLabel.Text = "Parolalar uyuþmuyor.";
-            MessageLabel.IsVisible = true;
-            return;
-        }
-
-        var updatedUser = new UserUpdateDto
-        {
-            Name = NameEntry.Text,
-            Email = EmailEntry.Text,
-            BirthDate = BirthDatePicker.Date,
-            Password = NewPasswordEntry.Text
-        };
-
-        var userId = Preferences.Get("UserId", 0);
-        var response = await _httpClient.PutAsJsonAsync($"/api/User/{userId}", updatedUser);
-
-        if (response.IsSuccessStatusCode)
-        {
-            await DisplayAlert("Baþarýlý", "Bilgiler güncellendi", "Tamam");
-        }
-        else
-        {
-            var msg = await response.Content.ReadAsStringAsync();
-            MessageLabel.Text = $"Hata: {msg}";
-            MessageLabel.IsVisible = true;
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hata", ex.Message, "Tamam");
+            }
         }
     }
 }
-

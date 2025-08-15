@@ -18,23 +18,39 @@ namespace DentalHealthFollow_Up.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-         
+
+            // User - Goal
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Goals)
+                .WithOne(g => g.User)
+                .HasForeignKey(g => g.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // User - PasswordReset
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.PasswordResets)
+                .WithOne(pr => pr.User)
+                .HasForeignKey(pr => pr.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Goal - GoalRecord
             modelBuilder.Entity<Goal>()
                 .HasMany(g => g.GoalRecords)
                 .WithOne(gr => gr.Goal)
                 .HasForeignKey(gr => gr.GoalId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // User - GoalRecord (Restrict = ON DELETE NO ACTION)
+            modelBuilder.Entity<User>()
+                .HasMany<GoalRecord>()
+                .WithOne(gr => gr.User)
+                .HasForeignKey(gr => gr.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Goals)
-                .WithOne(g => g.User)
-                .HasForeignKey(g => g.UserId);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.PasswordResets)
-                .WithOne(pr => pr.User)
-                .HasForeignKey(pr => pr.Userid);
         }
+
+
     }
 }
 

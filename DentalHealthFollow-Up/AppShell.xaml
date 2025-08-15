@@ -1,40 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Shell
+    x:Class="DentalHealthFollow_Up.MAUI.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:DentalHealthFollow_Up.MAUI"
-    x:Class="DentalHealthFollow_Up.MAUI.AppShell"
-    Shell.FlyoutBehavior="Disabled"
-    Title="DentalHealthFollow_Up">
+    xmlns:views="clr-namespace:DentalHealthFollow_Up.MAUI">
 
-    <ShellContent
-        Title="Giriş"
-        ContentTemplate="{DataTemplate local:LoginPage}"
-        Route="LoginPage" />
+    
+    <ShellContent Route="login"    ContentTemplate="{DataTemplate views:LoginPage}" />
+    <ShellContent Route="register" ContentTemplate="{DataTemplate views:RegisterPage}" />
 
-    <ShellContent
-        Title="Kayıt"
-        ContentTemplate="{DataTemplate local:RegisterPage}"
-        Route="RegisterPage" />
-
-    <ShellContent
-        Title="Ana Sayfa"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
-    <ShellContent
-        Title="Profil"
-        ContentTemplate="{DataTemplate local:ProfilePage}"
-        Route="ProfilePage" />
-
-    <ShellContent
-        Title="Hedefler"
-        ContentTemplate="{DataTemplate local:GoalsPage}"
-        Route="GoalsPage" />
-
-    <ShellContent
-    Title="Parolamı Unuttum"
-    ContentTemplate="{DataTemplate local:ForgotPasswordPage}"
-    Route="ForgotPasswordPage" />
-
+    
+    <TabBar Route="main">
+        <Tab Title="Ana Sayfa" Icon="home.png">
+            <ShellContent Route="home" ContentTemplate="{DataTemplate views:MainPage}" />
+        </Tab>
+        <Tab Title="Hedefler" Icon="goals.png">
+            <ShellContent Route="goals" ContentTemplate="{DataTemplate views:GoalsPage}" />
+        </Tab>
+        <Tab Title="Profil" Icon="profile.png">
+            <ShellContent Route="profile" ContentTemplate="{DataTemplate views:ProfilePage}" />
+        </Tab>
+    </TabBar>
 </Shell>

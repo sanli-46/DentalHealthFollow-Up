@@ -1,74 +1,58 @@
 using System.Net.Http.Json;
-using DentalHealthFollow_Up.Shared.DTOs;
 
-namespace DentalHealthFollow_Up.MAUI;
-
-public partial class ForgotPasswordPage : ContentPage
+namespace DentalHealthFollow_Up.MAUI
 {
-    private readonly HttpClient _httpClient;
-    private int userId = 0;
-
-    public ForgotPasswordPage()
+    public partial class ForgotPasswordPage : ContentPage
     {
-        InitializeComponent();
-        _httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:7146") }; // URL'yi API adresine göre güncelle
-    }
+        public ForgotPasswordPage() { InitializeComponent(); }
 
-    private async void OnVerifyClicked(object sender, EventArgs e)
-    {
-        MessageLabel.IsVisible = false;
-        NewPasswordLayout.IsVisible = false;
-
-        var email = EmailEntry.Text?.Trim();
-        if (string.IsNullOrEmpty(email))
+        private async void OnVerifyClicked(object sender, EventArgs e)
         {
-            MessageLabel.Text = "E-posta alaný boþ olamaz.";
-            MessageLabel.IsVisible = true;
-            return;
+            try
+            {
+                var email = EmailEntry.Text?.Trim();
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    await DisplayAlert("Uyarý", "E-posta giriniz.", "Tamam"); return;
+                }
+
+                var resp = await Api.Client().PostAsJsonAsync("api/user/forgot-password", new { Email = email! });
+                if (resp.IsSuccessStatusCode)
+                    await DisplayAlert("Bilgi", "Hesap bulundu. Yeni þifreyi belirleyebilirsiniz.", "Tamam");
+                else
+                    await DisplayAlert("Uyarý", "E-posta bulunamadý.", "Tamam");
+            }
+            catch (Exception ex) { await DisplayAlert("Hata", ex.Message, "Tamam"); }
         }
 
-        var response = await _httpClient.GetAsync($"/api/User/by-email/{email}");
-
-        if (response.IsSuccessStatusCode)
+        private async void OnUpdatePasswordClicked(object sender, EventArgs e)
         {
-            var user = await response.Content.ReadFromJsonAsync<UserDto>();
-            userId = user!.Id;
-            NewPasswordLayout.IsVisible = true;
-        }
-        else
-        {
-            MessageLabel.Text = "E-posta adresi sistemde kayýtlý deðil.";
-            MessageLabel.IsVisible = true;
-        }
-    }
+            try
+            {
+                var email = EmailEntry.Text?.Trim();
+                var newPass = NewPasswordEntry.Text;
 
-    private async void OnUpdatePasswordClicked(object sender, EventArgs e)
-    {
-        MessageLabel.IsVisible = false;
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(newPass))
+                {
+                    await DisplayAlert("Uyarý", "E-posta ve yeni parola zorunludur.", "Tamam"); return;
+                }
 
-        if (NewPasswordEntry.Text != ConfirmPasswordEntry.Text)
-        {
-            MessageLabel.Text = "Parolalar eþleþmiyor.";
-            MessageLabel.IsVisible = true;
-            return;
-        }
+                var resp = await Api.Client().PostAsJsonAsync("api/user/reset-password",
+                    new { Email = email!, NewPassword = newPass! });
 
-        var update = new UserUpdateDto
-        {
-            Password = NewPasswordEntry.Text!
-        };
-
-        var response = await _httpClient.PutAsJsonAsync($"/api/User/password-reset/{userId}", update);
-
-        if (response.IsSuccessStatusCode)
-        {
-            await DisplayAlert("Baþarýlý", "Parola güncellendi", "Tamam");
-            await Shell.Current.GoToAsync("LoginPage");
-        }
-        else
-        {
-            MessageLabel.Text = "Parola güncellenemedi.";
-            MessageLabel.IsVisible = true;
+                if (resp.IsSuccessStatusCode)
+                {
+                    await DisplayAlert("Baþarýlý", "Parola güncellendi. Giriþ yapabilirsiniz.", "Tamam");
+                    await Navigation.PopAsync();
+                }
+                else
+                {
+                    var err = await resp.Content.ReadAsStringAsync();
+                    await DisplayAlert("Hata", string.IsNullOrWhiteSpace(err) ? "Ýþlem baþarýsýz." : err, "Tamam");
+                }
+            }
+            catch (Exception ex) { await DisplayAlert("Hata", ex.Message, "Tamam"); }
         }
     }
 }
+

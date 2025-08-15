@@ -3,7 +3,7 @@ using DentalHealthFollow_Up.Entities;
 using DentalHealthFollow_Up.Shared.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DentalHealthFollow_Up.Shared.DTOs;
+
 
 namespace DentalHealthFollow_Up.API.Controllers
 {
@@ -27,10 +27,9 @@ namespace DentalHealthFollow_Up.API.Controllers
                 .Where(x => x.UserId == userId && x.Date >= DateTime.Today.AddDays(-lastDays))
                 .Select(x => new GoalRecordListDto
                 {
-                    Id = x.Id,
+                    Id = x.GoalRecordId,
                     Note = x.Note,
                     Date = x.Date,
-                    Time = x.Time,
                     GoalTitle = x.Goal.Title
                 })
                 .ToListAsync();
@@ -40,7 +39,7 @@ namespace DentalHealthFollow_Up.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] GoalDto dto)
+        public async Task<IActionResult> Create([FromBody] GoalCreateDto dto)
         {
             var goal = new Goal
             {
@@ -54,11 +53,11 @@ namespace DentalHealthFollow_Up.API.Controllers
             _context.Goals.Add(goal);
             await _context.SaveChangesAsync();
 
-            dto.Id = goal.Id;
-            return Ok(dto);
+            return Ok();
         }
 
-        
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

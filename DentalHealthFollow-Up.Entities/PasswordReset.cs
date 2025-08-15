@@ -7,13 +7,13 @@ namespace DentalHealthFollow_Up.Entities
 {
     public class PasswordReset
     {
-        public int Id { get; set; }
-        public int Userid { get; set; }
+        public int PasswordResetId { get; set; }
+        public int UserId { get; set; }
         public string Token { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime ExpiresAt { get; set; }
 
-
+        public string ResetCode { get; set; } = null!;
 
         public User User { get; set; } = null!;
     }

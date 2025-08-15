@@ -1,37 +1,33 @@
-using DentalHealthFollow_Up.DataAccess;
-using DentalHealthFollow_Up.Entities;
+using System.Net.Http;
+using Microsoft.Extensions.DependencyInjection;
 
-
-namespace DentalHealthFollow_Up;
+namespace DentalHealthFollow_Up.MAUI;
 
 public partial class HealthTipsPage : ContentPage
 {
-    private readonly AppDbContext _context;
-    private readonly Random _random = new();
+    private readonly IHttpClientFactory _clientFactory;
 
-    public HealthTipsPage(AppDbContext context)
+    public HealthTipsPage() : this(
+        MauiProgram.Services.GetRequiredService<IHttpClientFactory>())
+    { }
+
+    public HealthTipsPage(IHttpClientFactory clientFactory)
     {
         InitializeComponent();
-        _context = context;
-        ShowRandomTip();
+        _clientFactory = clientFactory;
     }
 
-    private void ShowRandomTip()
+    private async void OnGetTipClicked(object sender, EventArgs e)
     {
-        var tips = _context.HealthTips.ToList();
-        if (tips.Any())
+        try
         {
-            var randomTip = tips[_random.Next(tips.Count)];
-            tipLabel.Text = randomTip.Content;
+            var client = _clientFactory.CreateClient("API");
+            var tip = await client.GetStringAsync("api/tips/random");
+            TipLabel.Text = tip;
         }
-        else
+        catch (Exception ex)
         {
-            tipLabel.Text = "Henüz kayýtlý bir saðlýk ipucu yok.";
+            TipLabel.Text = $"Hata: {ex.Message}";
         }
-    }
-
-    private void OnShowTipClicked(object sender, EventArgs e)
-    {
-        ShowRandomTip();
     }
 }

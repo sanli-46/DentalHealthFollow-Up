@@ -1,27 +1,61 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="DentalHealthFollow_Up.TrackingPage"
-             Title="Takip Ekranı">
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="DentalHealthFollow_Up.MAUI.TrackingPage"
+    Title="Kayıt Takibi">
 
-    <VerticalStackLayout Padding="20">
+    <Grid Padding="16" RowDefinitions="Auto,*">
+        <Label Text="Son Kayıtlar"
+               FontAttributes="Bold"
+               FontSize="18" />
 
-        <Label Text="Takip Notu Girin:" FontAttributes="Bold" />
-        <Editor x:Name="trackingNoteEntry" HeightRequest="100" Placeholder="Bugünkü ilerlemeni yaz..." />
+        <CollectionView x:Name="recordsList"
+                        Grid.Row="1"
+                        Margin="0,12,0,0"
+                        SelectionMode="None">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="24" Spacing="8">
+                    <Label Text="Henüz kayıt bulunamadı."
+                           HorizontalOptions="Center" />
+                    <Label Text="Durum sayfasından yeni kayıt ekleyebilirsiniz."
+                           FontSize="12"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
 
-        <Button Text="Kaydet" Clicked="OnSaveTrackingClicked" Margin="0,10,0,20"/>
-
-        <Label Text="Kayıtlar:" FontAttributes="Bold" />
-        <CollectionView x:Name="trackingCollectionView">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,5" Padding="10" BorderColor="Gray">
-                        <Label Text="{Binding Note}" FontSize="14" />
+                    <Frame Margin="0,6"
+                           Padding="12"
+                           CornerRadius="12"
+                           BorderColor="{DynamicResource Gray500}">
+                        <Grid RowDefinitions="Auto,Auto,Auto"
+                              ColumnDefinitions="*,Auto">
+                            <!-- Tarih + Hedef -->
+                            <Label Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding Date, StringFormat='{}{0:dd.MM.yyyy}'}"
+                                   FontAttributes="Bold" />
+                            <Label Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding GoalId, StringFormat='Hedef #{0}'}"
+                                   HorizontalTextAlignment="End" />
+
+                            <!-- Süre -->
+                            <Label Grid.Row="1" Grid.ColumnSpan="2"
+                                   Margin="0,4,0,0"
+                                   Text="{Binding DurationInMinutes, StringFormat='Süre: {0} dk'}" />
+
+                            <!-- Not -->
+                            <Label Grid.Row="2" Grid.ColumnSpan="2"
+                                   Margin="0,4,0,0"
+                                   FontSize="12"
+                                   Text="{Binding Note}" />
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-    </VerticalStackLayout>
-
+    </Grid>
 </ContentPage>
+
+

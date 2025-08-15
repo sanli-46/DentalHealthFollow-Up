@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="DentalHealthFollow_Up.HealthTipsPage"
-             Title="Sağlık İpucu">
-
-    <VerticalStackLayout Padding="20" Spacing="20" VerticalOptions="Center">
-
-        <Label x:Name="tipLabel"
-               Text="Sağlık ipucu burada görünecek"
-               FontSize="20"
-               HorizontalOptions="Center"
-               HorizontalTextAlignment="Center" />
-
-        <Button Text="Yeni İpucu Göster"
-                Clicked="OnShowTipClicked"
-                HorizontalOptions="Center" />
-
+<ContentPage
+    x:Class="DentalHealthFollow_Up.MAUI.HealthTipsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Günlük Öneri">
+    <VerticalStackLayout Padding="24" Spacing="16">
+        <Label x:Name="TipLabel" Text="Bir öneri almak için butona bas." />
+        <Button Text="Öneri Getir" Clicked="OnGetTipClicked" />
     </VerticalStackLayout>
-
 </ContentPage>
+
 

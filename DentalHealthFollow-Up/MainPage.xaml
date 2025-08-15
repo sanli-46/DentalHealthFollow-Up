@@ -4,21 +4,14 @@
              x:Class="DentalHealthFollow_Up.MAUI.MainPage"
              Title="Ana Sayfa">
 
+    <VerticalStackLayout Padding="16" Spacing="12">
+        <Label x:Name="welcomeLabel" FontAttributes="Bold" FontSize="20" />
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20" VerticalOptions="Center">
-            <Label x:Name="welcomeLabel"
-                   FontSize="24"
-                   HorizontalOptions="Center"
-                   TextColor="DarkBlue"
-                   />
-
-            <Button Text="Profilim" Clicked="OnProfileClicked" />
-            <Button Text="Takip Et" Clicked="OnTrackingClicked" />
-            <Button Text="Hedeflerim" Clicked="OnGoalsClicked" />
-            <Button Text="Öneri Al" Clicked="OnTipsClicked" />
-            <Button Text="Çıkış Yap" Clicked="OnLogoutClicked" />
-        </VerticalStackLayout>
-    </ScrollView>
+        <Button Text="Profil"   Clicked="OnProfileClicked" />
+        <Button Text="Takip"    Clicked="OnTrackingClicked" />
+        <Button Text="Hedefler" Clicked="OnGoalsClicked" />
+        <Button Text="Öneriler" Clicked="OnTipsClicked" />
+        <Button Text="Çıkış"    Clicked="OnLogoutClicked" />
+    </VerticalStackLayout>
 </ContentPage>
 

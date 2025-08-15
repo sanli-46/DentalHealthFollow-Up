@@ -1,29 +1,54 @@
 using DentalHealthFollow_Up.DataAccess;
+using DentalHealthFollow_Up.API.Options;
+using DentalHealthFollow_Up.API.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Net;
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 0) Development'ta user-secrets'
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+
+// 1) Kestrel portlarý
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.ListenAnyIP(5050); // HTTP
-    serverOptions.ListenAnyIP(7250, listenOptions =>
-    {
-        listenOptions.UseHttps();     // HTTPS
-    });
+    serverOptions.ListenAnyIP(5050); 
+    serverOptions.ListenAnyIP(7250, listenOptions => listenOptions.UseHttps());
 });
 
+// 2) DbContext 
+builder.Services.AddDbContext<AppDbContext>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
+// 3) CORS (MAUI)
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("allow-maui", p =>
+        p.AllowAnyHeader()
+         .AllowAnyMethod()
+         .WithOrigins("http://localhost", "https://localhost"));
+});
+
+// 4) Options binding + Servisler 
+builder.Services.Configure<EncryptionOptions>(
+    builder.Configuration.GetSection("Encryption"));
+builder.Services.AddSingleton<EncryptionService>();
+
+builder.Services.Configure<SmtpOptions>(
+    builder.Configuration.GetSection("Smtp"));
+
+builder.Services.AddScoped<MailService>();
+
+// 5) MVC + Swagger
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// 6) Middleware pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -31,6 +56,20 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("allow-maui");
 app.UseAuthorization();
+app.MapGet("/api/tips/random", () =>
+{
+    var tips = new[]
+    {
+        "Diþ ipini her akþam kullan.",
+        "Þekerli içeceklerden sonra su iç.",
+        "Florürlü diþ macunu tercih et.",
+        "Yatmadan önce atýþtýrma.",
+        "Diþ fýrçaný 3 ayda bir deðiþtir."
+    };
+    return Results.Ok(tips[Random.Shared.Next(tips.Length)]);
+});
 app.MapControllers();
+
 app.Run();

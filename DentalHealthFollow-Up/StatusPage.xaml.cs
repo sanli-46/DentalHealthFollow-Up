@@ -1,142 +1,115 @@
-using DentalHealthFollow_Up.Shared.DTOs;  
+ï»¿using DentalHealthFollow_Up.Shared.DTOs;
+using System.Collections.ObjectModel;
 using System.Net.Http.Json;
+using Microsoft.Maui.Storage;
 
-namespace DentalHealthFollow_Up.MAUI;
-
-public partial class StatusPage : ContentPage
+namespace DentalHealthFollow_Up.MAUI
 {
-    private readonly HttpClient _httpClient;
-    private List<GoalDto> _goals = new();
-    private string? _imageBase64 = null;
-
-    public StatusPage(IHttpClientFactory httpClientFactory)
+    public partial class StatusPage : ContentPage
     {
-        InitializeComponent();
-        _httpClient = httpClientFactory.CreateClient("API");
-    }
+        private IHttpClientFactory? _httpFactory;
+        private readonly ObservableCollection<object> _last7Days = new();
+        private string? _selectedImageBase64;
 
-    protected override async void OnAppearing()
-    {
-        base.OnAppearing();
-        base.OnAppearing();
-        await LoadGoals();
-        await LoadRecords();
+        private int CurrentUserId => Preferences.Get("CurrentUserId", 0);
 
-        try
+        public StatusPage()
         {
-            var userId = Preferences.Get("UserId", 1);
-            var response = await _httpClient.GetAsync($"/api/goals?userId={userId}");
+            InitializeComponent();
+            Last7DaysList.ItemsSource = _last7Days;
+        }
 
-            if (response.IsSuccessStatusCode)
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            _httpFactory ??= ServiceHelper.Resolve<IHttpClientFactory>();
+
+            if (CurrentUserId <= 0)
             {
-                _goals = await response.Content.ReadFromJsonAsync<List<GoalDto>>() ?? new();
-                GoalPicker.ItemsSource = _goals;
+                await DisplayAlert("UyarÄ±", "LÃ¼tfen giriÅŸ yapÄ±n.", "Tamam");
+                await Navigation.PushAsync(new LoginPage());
+                return;
+            }
+
+            await LoadGoals();
+            await LoadLast7Days();
+        }
+
+        private async Task LoadGoals()
+        {
+            var client = _httpFactory!.CreateClient("API");
+            var goals = await client.GetFromJsonAsync<List<GoalDto>>($"/api/Goals/user/{CurrentUserId}");
+            GoalPicker.ItemsSource = goals ?? new List<GoalDto>();
+        }
+
+        private async Task LoadLast7Days()
+        {
+            _last7Days.Clear();
+            var client = _httpFactory!.CreateClient("API");
+            var records = await client.GetFromJsonAsync<List<GoalRecordDto>>($"/api/GoalRecords/last7days/{CurrentUserId}");
+            if (records is null) return;
+
+            foreach (var r in records)
+            {
+                _last7Days.Add(new
+                {
+                    Date = r.Date.ToString("dd.MM.yyyy"),
+                    GoalTitle = $"Hedef #{r.GoalId}",
+                    DurationText = r.DurationInMinutes.HasValue ? $"SÃ¼re: {r.DurationInMinutes} dk" : "SÃ¼re: -",
+                    r.Note
+                });
             }
         }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Hata", ex.Message, "Tamam");
-        }
-    }
 
-    private async void OnPickImageClicked(object sender, EventArgs e)
-    {
-        var result = await FilePicker.Default.PickAsync(new PickOptions
+        private async void OnPickImageClicked(object sender, EventArgs e)
         {
-            PickerTitle = "Görsel Seç (.jpg, .png)",
-            FileTypes = FilePickerFileType.Images
-        });
+            var result = await FilePicker.PickAsync(new PickOptions { PickerTitle = "GÃ¶rsel seÃ§ (.jpg/.png)" });
+            if (result is null) return;
 
-        if (result != null)
-        {
             using var stream = await result.OpenReadAsync();
             using var ms = new MemoryStream();
             await stream.CopyToAsync(ms);
-            _imageBase64 = Convert.ToBase64String(ms.ToArray());
+            var bytes = ms.ToArray();
 
-            
-            stream.Position = 0;
-            SelectedImagePreview.Source = ImageSource.FromStream(() => stream);
+            _selectedImageBase64 = Convert.ToBase64String(bytes);
+            SelectedImagePreview.Source = ImageSource.FromStream(() => new MemoryStream(bytes));
             SelectedImagePreview.IsVisible = true;
-
-            await DisplayAlert("Baþarýlý", "Görsel seçildi", "Tamam");
         }
-    }
-    private async Task LoadRecords()
-    {
-        try
-        {
-            var userId = Preferences.Get("UserId", 1);
-            var response = await _httpClient.GetAsync($"/api/goalrecords?userId={userId}&lastDays=7");
 
-            if (response.IsSuccessStatusCode)
+        private async void OnSaveStatusClicked(object sender, EventArgs e)
+        {
+            if (GoalPicker.SelectedItem is not GoalDto selectedGoal)
             {
-                var records = await response.Content.ReadFromJsonAsync<List<GoalRecordListDto>>();
-                RecordListView.ItemsSource = records;
+                await DisplayAlert("UyarÄ±", "Hedef seÃ§iniz.", "Tamam");
+                return;
+            }
+
+            int? duration = null;
+            if (int.TryParse(DurationEntry.Text, out var d) && d > 0) duration = d;
+
+            var dto = new GoalRecordCreateDto
+            {
+                UserId = CurrentUserId,
+                GoalId = selectedGoal.Id,
+                Date = DateTime.Today,
+                DurationInMinutes = duration,
+                Note = StatusNoteEditor.Text,
+                ImageBase64 = _selectedImageBase64
+            };
+
+            var client = _httpFactory!.CreateClient("API");
+            var resp = await client.PostAsJsonAsync("/api/GoalRecords", dto);
+
+            if (resp.IsSuccessStatusCode)
+            {
+                await DisplayAlert("BaÅŸarÄ±lÄ±", "Durum kaydedildi.", "Tamam");
+                await LoadLast7Days();
             }
             else
             {
-                await DisplayAlert("Hata", "Kayýtlar getirilemedi", "Tamam");
+                var msg = await resp.Content.ReadAsStringAsync();
+                await DisplayAlert("Hata", string.IsNullOrWhiteSpace(msg) ? "KayÄ±t baÅŸarÄ±sÄ±z." : msg, "Tamam");
             }
         }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Hata", ex.Message, "Tamam");
-        }
     }
-
-
-    private async void OnSaveRecordClicked(object sender, EventArgs e)
-    {
-        if (GoalPicker.SelectedItem is not GoalDto selectedGoal)
-        {
-            await DisplayAlert("Hata", "Lütfen bir hedef seçiniz.", "Tamam");
-            return;
-        }
-
-        var dto = new GoalRecordDto
-        {
-            GoalId = selectedGoal.Id,
-            Date = DateTime.Today,
-            Time = DateTime.Now.TimeOfDay,
-            Note = StatusNoteEditor.Text,
-            DurationInMinutes = 0,
-            ImageBase64 = _imageBase64,
-            UserId = 1
-        };
-
-        var response = await _httpClient.PostAsJsonAsync("/api/goalrecords", dto);
-
-        if (response.IsSuccessStatusCode)
-        {
-            await DisplayAlert("Baþarýlý", "Durum kaydedildi", "Tamam");
-            StatusNoteEditor.Text = "";
-            _imageBase64 = null;
-        }
-        else
-        {
-            var msg = await response.Content.ReadAsStringAsync();
-            await DisplayAlert("Hata", $"Kayýt baþarýsýz: {msg}", "Tamam");
-        }
-    }
-    private async Task LoadGoals()
-    {
-        try
-        {
-            var userId = Preferences.Get("UserId", 1);
-            var response = await _httpClient.GetAsync($"/api/goals?userId={userId}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var goals = await response.Content.ReadFromJsonAsync<List<GoalDto>>() ?? new();
-                GoalPicker.ItemsSource = goals;
-            }
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Hata", ex.Message, "Tamam");
-        }
-    }
-
-
 }

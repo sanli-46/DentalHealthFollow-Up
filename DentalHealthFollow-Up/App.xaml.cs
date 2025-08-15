@@ -1,20 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿namespace DentalHealthFollow_Up.MAUI;
 
-
-namespace DentalHealthFollow_Up.MAUI
+public partial class App : Application
 {
-    public partial class App : Application
+    public App(AppShell appShell)
     {
-        
-        
-           public App(AppShell appShell)
-        {
-            InitializeComponent();
-            MainPage = MainPage = appShell;
-        }
-
-
-
+        InitializeComponent();
+        MainPage = appShell;
     }
 }
-

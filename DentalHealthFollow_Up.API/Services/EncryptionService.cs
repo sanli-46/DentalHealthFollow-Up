@@ -1,49 +1,42 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using DentalHealthFollow_Up.API.Options;
+using Microsoft.Extensions.Options;
 
 namespace DentalHealthFollow_Up.API.Services
 {
     public class EncryptionService
     {
-        private readonly string key = "Trtek2025!AESKey"; // 16 karakter
+        private readonly byte[] _key;
+        private readonly byte[] _iv;
+
+        public EncryptionService(IOptions<EncryptionOptions> opt)
+        {
+            _key = Encoding.UTF8.GetBytes(opt.Value.Key);
+            _iv = Encoding.UTF8.GetBytes(opt.Value.IV);
+        }
 
         public string Encrypt(string plainText)
         {
             using var aes = Aes.Create();
-            aes.Key = Encoding.UTF8.GetBytes(key);
-            aes.GenerateIV();
-            var iv = aes.IV;
-
-            using var encryptor = aes.CreateEncryptor(aes.Key, iv);
-            var plainBytes = Encoding.UTF8.GetBytes(plainText);
-            var encryptedBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
-
-            var result = new byte[iv.Length + encryptedBytes.Length];
-            Buffer.BlockCopy(iv, 0, result, 0, iv.Length);
-            Buffer.BlockCopy(encryptedBytes, 0, result, iv.Length, encryptedBytes.Length);
-
-            return Convert.ToBase64String(result);
+            aes.Key = _key; aes.IV = _iv;
+            using var ms = new MemoryStream();
+            using (var cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+            using (var sw = new StreamWriter(cs))
+                sw.Write(plainText);
+            return Convert.ToBase64String(ms.ToArray());
         }
 
-        public string Decrypt(string encryptedText)
+        public string Decrypt(string cipherBase64)
         {
-            var fullCipher = Convert.FromBase64String(encryptedText);
-
+            var buffer = Convert.FromBase64String(cipherBase64);
             using var aes = Aes.Create();
-            aes.Key = Encoding.UTF8.GetBytes(key);
-
-            var iv = new byte[aes.BlockSize / 8];
-            var cipher = new byte[fullCipher.Length - iv.Length];
-
-            Buffer.BlockCopy(fullCipher, 0, iv, 0, iv.Length);
-            Buffer.BlockCopy(fullCipher, iv.Length, cipher, 0, cipher.Length);
-
-            aes.IV = iv;
-
-            using var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-            var decryptedBytes = decryptor.TransformFinalBlock(cipher, 0, cipher.Length);
-
-            return Encoding.UTF8.GetString(decryptedBytes);
+            aes.Key = _key; aes.IV = _iv;
+            using var ms = new MemoryStream(buffer);
+            using var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read);
+            using var sr = new StreamReader(cs);
+            return sr.ReadToEnd();
         }
     }
 }
+
