@@ -23,6 +23,9 @@
             <Label Text="Yeni Parola Tekrar" />
             <Entry x:Name="ConfirmPasswordEntry" IsPassword="True" Placeholder="Yeni Parola Tekrar" />
 
+            <CollectionView x:Name="RecordsCollectionView" Margin="0,10" />
+            <Entry x:Name="DurationEntry" Keyboard="Numeric" Placeholder="Süre (dk)" />
+
             <Button Text="Bilgileri Güncelle" Clicked="OnUpdateClicked" />
 
             <Label x:Name="MessageLabel" TextColor="Red" IsVisible="False"/>

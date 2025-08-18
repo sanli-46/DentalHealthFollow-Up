@@ -1,6 +1,8 @@
-using DentalHealthFollow_Up.DataAccess;
 using DentalHealthFollow_Up.API.Options;
 using DentalHealthFollow_Up.API.Services;
+using DentalHealthFollow_Up.DataAccess;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +34,7 @@ builder.Services.AddCors(opt =>
          .WithOrigins("http://localhost", "https://localhost"));
 });
 
+
 // 4) Options binding + Servisler 
 builder.Services.Configure<EncryptionOptions>(
     builder.Configuration.GetSection("Encryption"));
@@ -49,6 +52,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseExceptionHandler("/error");
+app.Map("/error", (HttpContext ctx, ILogger<Program> logger) =>
+{
+    var ex = ctx.Features.Get<IExceptionHandlerFeature>()?.Error;
+    if (ex != null) logger.LogError(ex, "Unhandled");
+    return Results.Problem("Beklenmeyen bir hata oluþtu.");
+});
 // 6) Middleware pipeline
 if (app.Environment.IsDevelopment())
 {

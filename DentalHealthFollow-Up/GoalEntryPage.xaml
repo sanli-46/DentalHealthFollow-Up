@@ -39,8 +39,12 @@
                         </x:Array>
                     </Picker.ItemsSource>
                 </Picker>
+            <CollectionView x:Name="GoalsCollectionView" Margin="0,10"/>
 
-                <!-- Kaydet Butonu -->
+            <!-- Hedef ekleme alanları -->
+            <Label Text="Hedef Süresi (dk)" />
+            <Entry x:Name="TargetDurationEntry" Keyboard="Numeric" Placeholder="Örn: 5" />
+            <!-- Kaydet Butonu -->
                 <Button Text="Hedefi Kaydet" Clicked="OnSaveGoalClicked" />
 
                 <!-- Listeleme -->

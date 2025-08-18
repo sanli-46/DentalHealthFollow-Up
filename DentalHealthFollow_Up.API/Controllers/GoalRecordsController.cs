@@ -69,6 +69,13 @@ namespace DentalHealthFollow_Up.API.Controllers
 
             return Ok(list);
         }
+        [HttpGet("byGoal/{goalId:int}/count")]
+        public async Task<ActionResult<int>> CountByGoal(int goalId)
+        {
+            var count = await _context.GoalRecords.CountAsync(x => x.GoalId == goalId);
+            return Ok(count);
+        }
+
     }
 }
 

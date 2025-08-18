@@ -6,11 +6,15 @@ namespace DentalHealthFollow_Up.MAUI
 {
     public partial class GoalEntryPage : ContentPage
     {
+        private readonly IHttpClientFactory _httpFactory;
         private int CurrentUserId => Preferences.Get("CurrentUserId", 0);
 
-        public GoalEntryPage()
+        public GoalEntryPage() : this(ServiceHelper.Resolve<IHttpClientFactory>()) { }
+
+        public GoalEntryPage(IHttpClientFactory httpFactory)
         {
             InitializeComponent();
+            _httpFactory = httpFactory;
         }
 
         protected override async void OnAppearing()
@@ -18,45 +22,52 @@ namespace DentalHealthFollow_Up.MAUI
             base.OnAppearing();
             if (CurrentUserId <= 0)
             {
-                await DisplayAlert("Uyarý", "Önce giriþ yapýn.", "Tamam");
+                await DisplayAlert("Uyarý", "Lütfen giriþ yapýn.", "Tamam");
+                await Shell.Current.GoToAsync("//login");
                 return;
             }
-            await LoadGoals();
+            await LoadGoals(); // sayfada liste varsa
         }
 
         private async Task LoadGoals()
         {
-            var list = await Api.Client()
-                .GetFromJsonAsync<List<GoalDto>>($"api/Goals/user/{CurrentUserId}");
-
-            GoalsCollection.ItemsSource = list ?? new();
+            try
+            {
+                var client = _httpFactory.CreateClient("API");
+                var goals = await client.GetFromJsonAsync<List<GoalDto>>($"/api/Goals/user/{CurrentUserId}");
+                GoalsCollectionView.ItemsSource = goals ?? new List<GoalDto>(); // XAML’de varsa
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Hata", ex.Message, "Tamam");
+            }
         }
 
         private async void OnSaveGoalClicked(object sender, EventArgs e)
         {
+            if (CurrentUserId <= 0)
+            {
+                await DisplayAlert("Uyarý", "Giriþ gerekli.", "Tamam");
+                return;
+            }
+
+            var dto = new GoalCreateDto
+            {
+                UserId = CurrentUserId,
+                Title = TitleEntry.Text,
+                Description = DescriptionEditor.Text,
+                Period = PeriodPicker.SelectedItem?.ToString(),
+                DurationInMinutes = int.TryParse(TargetDurationEntry.Text, out var t) ? t : null,
+                Importance = ImportancePicker.SelectedItem?.ToString()
+            };
+
             try
             {
-                var title = TitleEntry.Text?.Trim();
-                if (string.IsNullOrWhiteSpace(title))
-                { await DisplayAlert("Uyarý", "Baþlýk zorunludur.", "Tamam"); return; }
-
-                int? targetMinutes = null; 
-
-                var payload = new
-                {
-                    UserId = Preferences.Get("CurrentUserId", 0),
-                    Title = title!,
-                    TargetDurationInMinutes = targetMinutes 
-                };
-
-                var resp = await Api.Client().PostAsJsonAsync("api/Goals", payload);
+                var client = _httpFactory.CreateClient("API");
+                var resp = await client.PostAsJsonAsync("/api/Goals", dto);
                 if (resp.IsSuccessStatusCode)
                 {
                     await DisplayAlert("Baþarýlý", "Hedef kaydedildi.", "Tamam");
-                    TitleEntry.Text = string.Empty;
-                    DescriptionEditor.Text = string.Empty;
-                    PeriodPicker.SelectedIndex = -1;
-                    ImportancePicker.SelectedIndex = -1;
                     await LoadGoals();
                 }
                 else
@@ -71,38 +82,27 @@ namespace DentalHealthFollow_Up.MAUI
             }
         }
 
-
         private async void OnDeleteGoalClicked(object sender, EventArgs e)
         {
+            if (sender is not Button btn || btn.BindingContext is not GoalDto g) return;
+
+            var ok = await DisplayAlert("Sil", $"“{g.Title}” silinsin mi?", "Evet", "Hayýr");
+            if (!ok) return;
+
             try
             {
-                if (sender is Button btn && btn.CommandParameter is int id && id > 0)
-                {
-                    var ok = await DisplayAlert("Onay", "Seçilen hedef silinsin mi?", "Evet", "Hayýr");
-                    if (!ok) return;
-
-                    var resp = await Api.Client().DeleteAsync($"api/Goals/{id}");
-                    if (resp.IsSuccessStatusCode)
-                    {
-                        await LoadGoals();
-                        await DisplayAlert("Bilgi", "Silindi.", "Tamam");
-                    }
-                    else
-                    {
-                        var msg = await resp.Content.ReadAsStringAsync();
-                        await DisplayAlert("Hata", string.IsNullOrWhiteSpace(msg) ? "Silme baþarýsýz." : msg, "Tamam");
-                    }
-                }
+                var client = _httpFactory.CreateClient("API");
+                var resp = await client.DeleteAsync($"/api/Goals/{g.GoalId}");
+                if (resp.IsSuccessStatusCode)
+                    await LoadGoals();
                 else
-                {
-                    await DisplayAlert("Uyarý", "Silmek için listedeki 'Sil' butonuna basýn.", "Tamam");
-                }
+                    await DisplayAlert("Hata", await resp.Content.ReadAsStringAsync(), "Tamam");
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Hata", ex.Message, "Tamam");
             }
+
         }
     }
 }
-

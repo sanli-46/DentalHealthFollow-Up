@@ -21,6 +21,8 @@
             <Image x:Name="SelectedImagePreview" HeightRequest="150" Aspect="AspectFit" IsVisible="False" Margin="0,10"/>
 
             <Button Text="Kaydet" Clicked="OnSaveStatusClicked" />
+           
+            <CollectionView x:Name="RecordsCollectionView" Margin="0,10" />
 
             <Label Text="Son 7 Gün Özeti" FontAttributes="Bold" />
             <CollectionView x:Name="Last7DaysList">

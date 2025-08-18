@@ -2,7 +2,7 @@
 {
     public class GoalDto
     {
-        public int Id { get; set; }
+        public int GoalId { get; set; }
 
         public int UserId { get; set; }
 

@@ -7,9 +7,7 @@ namespace DentalHealthFollow_Up.MAUI
         private bool _didRedirect;
 
         // XAML AppShell parametresiz çağırır; servisleri buradan çöz.
-        public AppShell() : this(
-            AppServices.Provider.GetRequiredService<UserSession>())
-        { }
+        public AppShell() : this(ServiceHelper.Resolve<UserSession>()) { }
 
         // Asıl ctor (testler için enjekte edilebilir)
         public AppShell(UserSession session)
@@ -39,9 +37,9 @@ namespace DentalHealthFollow_Up.MAUI
 
             // Oturum yoksa Login’e, varsa Main’e
             if (_session?.CurrentUser is null)
-                await GoToAsync("///login");
+                await GoToAsync("//login");
             else
-                await GoToAsync("///main");
+                await GoToAsync("//main");
         }
     }
 }

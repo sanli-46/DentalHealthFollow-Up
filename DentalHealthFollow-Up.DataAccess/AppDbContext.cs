@@ -5,20 +5,16 @@ namespace DentalHealthFollow_Up.DataAccess
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-        }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Goal> Goals { get; set; }
-        public DbSet<GoalRecord> GoalRecords { get; set; }
-        public DbSet<PasswordReset> PasswordResets { get; set; }
-        public DbSet<HealthTip> HealthTips { get; set; }
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Goal> Goals => Set<Goal>();
+        public DbSet<GoalRecord> GoalRecords => Set<GoalRecord>();
+        public DbSet<PasswordReset> PasswordResets => Set<PasswordReset>();
+        public DbSet<HealthTip> HealthTips => Set<HealthTip>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-
             // User - Goal
             modelBuilder.Entity<User>()
                 .HasMany(u => u.Goals)
@@ -40,17 +36,15 @@ namespace DentalHealthFollow_Up.DataAccess
                 .HasForeignKey(gr => gr.GoalId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // User - GoalRecord (Restrict = ON DELETE NO ACTION)
+            // User - GoalRecord 
             modelBuilder.Entity<User>()
-                .HasMany<GoalRecord>()
+                .HasMany(u => u.GoalRecords)
                 .WithOne(gr => gr.User)
                 .HasForeignKey(gr => gr.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-
+            
+            base.OnModelCreating(modelBuilder);
         }
-
-
     }
 }
-

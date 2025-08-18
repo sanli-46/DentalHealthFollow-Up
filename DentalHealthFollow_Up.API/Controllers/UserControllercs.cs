@@ -54,7 +54,7 @@ namespace DentalHealthFollow_Up.API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Mail gönderimi akışı bozmasın
+            
             _ = _mail.SendRegisterInfoAsync(user.Email, user.FullName);
 
             return Ok(new { message = "Kayıt başarılı." });
@@ -74,12 +74,12 @@ namespace DentalHealthFollow_Up.API.Controllers
             if (userEntity is null) return BadRequest("Kullanıcı bulunamadı.");
 
             bool ok;
-            if (userEntity.Password.StartsWith("v1:")) // yeni format
+            if (userEntity.Password.StartsWith("v1:")) 
             {
                 var plain = _encryption.Decrypt(userEntity.Password["v1:".Length..]);
                 ok = string.Equals(plain, dto.Password, StringComparison.Ordinal);
             }
-            else // eski düz metin kayıtlar için tek seferlik migrasyon
+            else 
             {
                 ok = string.Equals(userEntity.Password, dto.Password, StringComparison.Ordinal);
                 if (ok)
@@ -102,8 +102,7 @@ namespace DentalHealthFollow_Up.API.Controllers
             return Ok(user);
         }
 
-        // --- (OPSİYONEL) PAROLA SIFIRLAMA: sadece e-posta gönderir, DB'ye token kaydetmez ---
-        // İstersen tamamen silebilirsin; demo için yeterlidir ve compile hatası çıkarmaz.
+        
         [HttpPost("password/forgot")]
         public async Task<IActionResult> Forgot([FromBody] ForgotDto body)
         {
@@ -113,7 +112,7 @@ namespace DentalHealthFollow_Up.API.Controllers
             var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == emailNorm);
             if (user is null) return Ok();
 
-            // Sadece mail gönder (DB'de PasswordReset yoksa IsUsed vs. hatası çıkmasın)
+            
             var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
             var resetLink = $"https://localhost:7250/password-reset?token={Uri.EscapeDataString(token)}";
 
@@ -125,5 +124,79 @@ namespace DentalHealthFollow_Up.API.Controllers
         {
             public string Email { get; set; } = "";
         }
+        [HttpPost("password/reset")]
+        public async Task<IActionResult> ResetPassword([FromBody] PasswordResetDto dto)
+        {
+            var email = dto.Email?.Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(dto.Code) || string.IsNullOrWhiteSpace(dto.NewPassword))
+                return BadRequest("Geçersiz istek.");
+
+            // Şifre politikası
+            static bool Strong(string p) => p.Length >= 8 && p.Any(char.IsUpper) && p.Any(char.IsLower) && p.Any(char.IsDigit);
+            if (!Strong(dto.NewPassword))
+                return BadRequest("Şifre en az 8 karakter, büyük-küçük harf ve rakam içermeli.");
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user is null) return BadRequest("Kullanıcı bulunamadı.");
+
+            var pr = await _context.PasswordResets
+                .OrderByDescending(x => x.CreatedAt)
+                .FirstOrDefaultAsync(x => x.UserId == user.UserId && x.Token == dto.Code);
+
+            if (pr is null || pr.ExpiresAt < DateTime.UtcNow)
+                return BadRequest("Token geçersiz veya süresi dolmuş.");
+
+            user.Password = "v1:" + _encryption.Encrypt(dto.NewPassword);
+            _context.PasswordResets.Remove(pr); // tek kullanımlık
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Parola güncellendi." });
+        }
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Update(int id, [FromBody] UserUpdateDto dto)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user is null) return NotFound();
+
+            var newEmail = dto.Email?.Trim().ToLowerInvariant();
+            if (!string.IsNullOrWhiteSpace(newEmail) && newEmail != user.Email)
+            {
+                var exists = await _context.Users.AsNoTracking().AnyAsync(u => u.Email == newEmail);
+                if (exists) return BadRequest("Bu e-posta kullanımda.");
+                user.Email = newEmail;
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.Name)) user.FullName = dto.Name;
+            if (dto.BirthDate != default) user.BirthDate = dto.BirthDate;
+
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+            {
+                static bool Strong(string p) => p.Length >= 8 && p.Any(char.IsUpper) && p.Any(char.IsLower) && p.Any(char.IsDigit);
+                if (!Strong(dto.Password)) return BadRequest("Şifre en az 8 karakter, büyük-küçük harf ve rakam içermeli.");
+                user.Password = "v1:" + _encryption.Encrypt(dto.Password);
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<UserDto>> GetById(int id)
+        {
+            var u = await _context.Users
+                .Where(x => x.UserId == id)
+                .Select(x => new UserDto
+                {
+                    UserId = x.UserId,
+                    Name = x.FullName,
+                    Email = x.Email,
+                    BirthDate = x.BirthDate
+                })
+                .FirstOrDefaultAsync();
+
+            if (u is null) return NotFound();
+            return Ok(u);
+        }
+
+
     }
 }

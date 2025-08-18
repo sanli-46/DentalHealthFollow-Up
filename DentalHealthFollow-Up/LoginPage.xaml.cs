@@ -1,28 +1,29 @@
-﻿using System.Net.Http;
-using System.Net.Http.Json;
+﻿using DentalHealthFollow_Up.Shared.DTOs;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
-using Microsoft.Extensions.DependencyInjection;
-using DentalHealthFollow_Up.Shared.DTOs;
+using System.Net.Http;
+using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace DentalHealthFollow_Up.MAUI; 
 public partial class LoginPage : ContentPage
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly UserSession _session;
+    private bool _inited;
 
-   
-    public LoginPage() : this(
-        MauiProgram.Services.GetRequiredService<IHttpClientFactory>(),
-        MauiProgram.Services.GetRequiredService<UserSession>())
-    { }
-
-    
-    public LoginPage(IHttpClientFactory httpClientFactory, UserSession session)
+    public LoginPage()
     {
         InitializeComponent();
-        _httpClientFactory = httpClientFactory;
+    }
+
+
+    public LoginPage(IHttpClientFactory http, UserSession session) : this()
+    {
+        _httpClientFactory = http;
         _session = session;
+        _inited = true;
     }
 
     private async void OnLoginClicked(object sender, EventArgs e)

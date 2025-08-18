@@ -1,5 +1,6 @@
 using DentalHealthFollow_Up.Shared.DTOs;
 using System.Net.Http.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DentalHealthFollow_Up.MAUI
 {
@@ -7,7 +8,18 @@ namespace DentalHealthFollow_Up.MAUI
     {
         private int CurrentUserId => Preferences.Get("CurrentUserId", 0);
 
-        public ProfilePage() { InitializeComponent(); }
+        private readonly IHttpClientFactory _httpFactory;
+
+       
+        public ProfilePage() : this(ServiceHelper.Resolve<IHttpClientFactory>()) { }
+        public ProfilePage(IHttpClientFactory httpFactory)
+        {
+            InitializeComponent();
+            _httpFactory = httpFactory;
+        }
+       
+
+
 
         protected override async void OnAppearing()
         {

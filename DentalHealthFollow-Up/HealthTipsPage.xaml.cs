@@ -8,7 +8,7 @@ public partial class HealthTipsPage : ContentPage
     private readonly IHttpClientFactory _clientFactory;
 
     public HealthTipsPage() : this(
-        MauiProgram.Services.GetRequiredService<IHttpClientFactory>())
+       ServiceHelper.Resolve<IHttpClientFactory>())
     { }
 
     public HealthTipsPage(IHttpClientFactory clientFactory)

@@ -9,8 +9,9 @@ namespace DentalHealthFollow_Up.MAUI
         private readonly UserSession _session;
 
         public MainPage() : this(
-           MauiProgram.Services.GetRequiredService<IHttpClientFactory>(),
-           MauiProgram.Services.GetRequiredService<UserSession>())
+           ServiceHelper.Resolve<IHttpClientFactory>(),
+           ServiceHelper.Resolve<UserSession>()
+            )
         { }
         public MainPage(IHttpClientFactory httpFactory, UserSession session)
         {
